@@ -1,5 +1,11 @@
 const serialport = require("serialport")
-var port = new serialport('/dev/ttyACM1', { autoOpen: false });
+var port = new serialport('/dev/ttyACM1', { 
+
+    autoOpen: false
+
+    ,baudRate: 9600
+
+ });
 
 port.open(function (err) {
   if (err) {
