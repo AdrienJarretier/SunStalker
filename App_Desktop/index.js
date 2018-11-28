@@ -1,44 +1,18 @@
 
 const express = require('express');
-const serialport = require("serialport");
-const Readline = require('@serialport/parser-readline');
+
+const serial = require('./serial.js');
 
 
 let app = express();
 
 
-const port = new serialport('/dev/ttyACM0', {
 
-    autoOpen: false
-
-    ,baudRate: 9600
-
- });
-
-port.open(function (err) {
-  if (err) {
-    return console.log('Error opening port: ', err.message);
-  }
-})
-
-
-let data;
-
-
-const parser = port.pipe(new Readline({ delimiter: '\r\n' }))
-parser.on('data', (d) => {
-
-    d = d.split(',');
-
-    console.log(d);
-    data = d;
-
-})
 
 
 app.get('/', function(req, res) {
 
-    res.json(data);
+    res.json(serial.data);
 
 })
 
