@@ -1,20 +1,59 @@
+const serial = require('./serial.js')
+
+serial.start()
+let sensorBinded = false
+let sensorData = null
+let heliotBinded = false
+let heliotData = null
+
 // --------------------------------------------------------------
 // -------------------------------------------- RETRIEVE DATA ---
 
 // ----------------------------------------- OUR DATA
-function getOnlinePhotoValue() {
+function getOnlinePhotoValues() {
 	return [[523, 230, 201],[523, 230, 201],[523, 230, 201]]
 	// [data,data,data] / [null,null,null]
 }
 
 function getLocalPhotoValue() {
-	return [523, 230, 201]
-	// [data,data,data] / [null,null,null]
+
+	if(serial.isSensorConnected()) {
+
+		if(!sensorBinded) {
+			sensorBinded = true
+			serial.bindToSensorData(function(data) {
+				sensorData = data
+			})
+			serial.bindToSensorDisconnect(function() {
+				sensorData = null
+				sensorBinded = false
+			})
+		}
+
+	}
+	console.log('sensorData:',sensorData)
+	return sensorData
 
 }
 
-function getLocalPanelOrient() {
+function getHeliotPosition() {
 
+	if(serial.isHeliotConnected()) {
+
+		if(!heliotBinded) {
+			heliotBinded = true
+			serial.bindToHeliotData(function(data) {
+				heliotData = data
+			})
+			serial.bindToHeliotDisconnect(function() {
+				heliotData = null
+				heliotBinded = false
+			})
+		}
+
+	}
+	console.log('heliotData:',heliotData)
+	return heliotData
 }
 
 // ----------------------------------------- ONLINE DATA
@@ -26,7 +65,7 @@ function getLocalPanelOrient() {
 function computePhotoValue() {
 
 	let localPhoto = getLocalPhotoValue()
-	let onlinePhoto = getOnlinePhotoValue()
+	let onlinePhoto = getOnlinePhotoValues()
 
 	let computedValues = localPhoto
 
@@ -78,14 +117,31 @@ function computeSunPosition() {
 // --------------------------------------------------------------
 // ------------------------------------------------ INTERFACE ---
 
+// -------------------------------------------
 exports.getPhotoValues = function() {
 	return computePhotoValue()
 }
 
-exports.getLocalPhotoValues = function() {
-	return getLocalPhotoValues()
+exports.getLocalPhotoValue = function() {
+	return getLocalPhotoValue()
 }
 
 exports.getSunPosition = function() {
 	return computeSunPosition()
+}
+
+exports.getHeliotPosition = function() {
+	return getHeliotPosition()
+}
+
+// -------------------------------------------
+exports.setHeliotPosition = function(position) {
+	
+	// [ <byte saying their is data> , <position> ]
+	serial.sendHeliot([1,position]);
+}
+
+// -------------------------------------------
+exports.getSerialInterface = function() {
+	return serial
 }

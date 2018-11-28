@@ -3,16 +3,12 @@ const serialport = require("serialport");
 const Readline = require('@serialport/parser-readline');
 const usbDetect = require('usb-detection');
 
-let data;
-let port;
-let isOpen;
-exports.data = data;
-
 // ------------------------------------------------------
 // ------------------------------------------------------
 
 let allowedType = ['Sensor','Heliot']
 
+let isStarted = false
 
 let portMap = {}
 let deviceMap = {'Sensor':null,'Heliot':null}
@@ -21,11 +17,12 @@ let sensorConnected = false
 let heliotConnected = false
 
 let connectCallback = {'Sensor':[],'Heliot':[]}
+let disconnectCallback = {'Sensor':[],'Heliot':[]}
 let dataCallback = {'Sensor':[],'Heliot':[]}
 
 
 let dataTransformers = {
-	
+
 	Sensor: function(data) {
 		if(data.length != 4)
 			return null
@@ -33,12 +30,20 @@ let dataTransformers = {
 	},
 
 	Heliot: function(data) {
-		return data
+		if(data.length != 4)
+			return null
+		return [parseInt(data[1]),parseInt(data[2]),parseInt(data[3])]
 	},
 }
 
 // --------------------------------------------------------------------
 // -------------------------------------------------- MOMENT PICKER ---
+
+exports.isStarted = function() {
+	return isStarted
+}
+
+// ------------------------------------------------------
 
 exports.isSensorConnected = function() {
 	return deviceMap['Sensor'] != null
@@ -63,6 +68,29 @@ exports.getHeliotData = function() {
 }
 
 // --------------------------------------------------------------------
+// --------------------------------------------------- COMMUNICATOR ---
+
+function sendDevice(deviceType, dataArray) {
+	if(deviceMap[deviceType] == null) {
+		return false
+	}
+	let dataStr = dataArray.join(',')
+	deviceMap[deviceType].port.write(dataStr+'\n')
+	return true
+}
+
+exports.sendSensor = function(dataArray) {
+
+	return sendDevice('Sensor', dataArray)
+}
+
+exports.sendHeliot = function(dataArray) {
+
+	return sendDevice('Heliot', dataArray)
+}
+
+
+// --------------------------------------------------------------------
 // --------------------------------------------------------- BINDER ---
 
 exports.bindToSensorConnect = function(callback) {
@@ -71,6 +99,14 @@ exports.bindToSensorConnect = function(callback) {
 // ------------
 exports.bindToHeliotConnect = function(callback) {
 	connectCallback['Heliot'].push(callback)
+}
+
+exports.bindToSensorDisconnect = function(callback) {
+	disconnectCallback['Sensor'].push(callback)
+}
+// ------------
+exports.bindToHeliotDisconnect = function(callback) {
+	disconnectCallback['Heliot'].push(callback)
 }
 
 // ------------------------------------------------------
@@ -112,7 +148,8 @@ function dataRecieved(portName, data) {
 		for(let callback of connectCallback[deviceType]) {
 			callback(portMap[portName])
 		}
-		deviceMap[deviceType] = portName
+		portMap[portName].type = deviceType
+		deviceMap[deviceType] = portMap[portName]
 	}
 
 	// ---------------------------------- transform data
@@ -149,7 +186,6 @@ function startUsbMonitoring() {
 				dataRecieved(portName, d)
 			})
 			portMap[portName] = { 'port':port, 'type':null, 'lastData':null}
-			console.log('NEW DEVICE CONNECTED',portName)
 		}
 	}
 	// --------------------------------------
@@ -160,8 +196,14 @@ function startUsbMonitoring() {
 		if(portName != null) {
 
 			if(portMap.hasOwnProperty(portName)) {
+				let deviceType = portMap[portName].type
+				if(allowedType.indexOf(deviceType) != -1) {
+					for(let callback of disconnectCallback[deviceType]) {
+						callback(portMap[portName])
+					}
+				}
 				delete portMap[portName]
-				console.log('DEVICE DISCONNECTED',portName)
+				delete deviceMap[deviceType]
 			}
 		}
 	}
@@ -183,8 +225,10 @@ function startUsbMonitoring() {
 
 exports.start = function() {
 	startUsbMonitoring()
+	isStarted = true
 }
 
 exports.stop = function() {
 	usbDetect.stopMonitoring();
+	isStarted = false
 }
