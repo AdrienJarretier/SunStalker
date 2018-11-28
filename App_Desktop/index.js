@@ -1,5 +1,10 @@
+
+const express = require('express');
 const serialport = require("serialport")
-var port = new serialport('/dev/ttyACM1', { 
+const Readline = require('@serialport/parser-readline')
+
+
+const port = new serialport('/dev/ttyACM0', { 
 
     autoOpen: false
 
@@ -14,13 +19,7 @@ port.open(function (err) {
 })
 
 
-port.on('data', function (data) {
-  console.log('Datad:', data.toString());
-});
- 
-// Read data that is available but keep the stream from entering "flowing mode"
-port.on('readable', function () {
-  console.log('Datar:', port.read());
-});
 
 
+const parser = port.pipe(new Readline({ delimiter: '\r\n' }))
+parser.on('data', console.log)
