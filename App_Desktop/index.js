@@ -1,10 +1,13 @@
 
 const express = require('express');
-const serialport = require("serialport")
-const Readline = require('@serialport/parser-readline')
+const serialport = require("serialport");
+const Readline = require('@serialport/parser-readline');
 
 
-const port = new serialport('/dev/ttyACM0', { 
+let app = express();
+
+
+const port = new serialport('/dev/ttyACM0', {
 
     autoOpen: false
 
@@ -19,7 +22,31 @@ port.open(function (err) {
 })
 
 
+let data;
 
 
 const parser = port.pipe(new Readline({ delimiter: '\r\n' }))
-parser.on('data', console.log)
+parser.on('data', (d) => {
+
+    d = d.split(',');
+
+    console.log(d);
+    data = d;
+
+})
+
+
+app.get('/', function(req, res) {
+
+    res.json(data);
+
+})
+
+let server = require('http').Server(app);
+
+// le serveur attend les connexions sur le port 'config.port'
+server.listen(8090, function() {
+
+  console.log('listening on *:' + 8090);
+
+});
