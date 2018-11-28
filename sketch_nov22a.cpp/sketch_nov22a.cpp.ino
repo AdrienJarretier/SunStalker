@@ -24,6 +24,7 @@
       photocellReading3 = analogRead(photocellPin3);  
      
       //Serial.print("Analog reading = ");
+      Serial.print("Sensor,");
       Serial.print(photocellReading1); 
       Serial.print(",");// the raw analog reading
       Serial.print(photocellReading2);

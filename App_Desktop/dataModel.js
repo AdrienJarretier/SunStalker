@@ -87,5 +87,5 @@ exports.getLocalPhotoValues = function() {
 }
 
 exports.getSunPosition = function() {
-	return 90
+	return computeSunPosition()
 }
