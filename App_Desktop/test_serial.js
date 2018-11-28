@@ -20,6 +20,7 @@ dataModel.getSerialInterface().bindToHeliotConnect(function() {
 	dataModel.getSerialInterface().bindToHeliotData(function(data) {
 
 		if(tick == 20) {
+			
 			console.log('send',position)
 			dataModel.setHeliotPosition(position)
 			tick = 0
