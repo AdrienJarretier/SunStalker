@@ -1,3 +1,9 @@
+
+'use strict';
+
+const common = require('./common.js');
+
+
 let g;
 let data;
 let y;
@@ -5,8 +11,8 @@ let x;
 
 function drawChart(data) {
     data = data;
-    let width = 1000;
-    let height = 500;
+    let width = common.WINDOW.WIDTH / 2;
+    let height = width / ((1 + Math.sqrt(5)) / 2);
 
     let svg = d3.select('#photoValuesChart').append('svg')
         .attr("width", width)
@@ -22,10 +28,11 @@ function drawChart(data) {
     g = svg.append('g');
 
     g.selectAll('rect').data(data).enter().append('rect')
-        .attr('x', function (d, i) { 
-            
-            console.log("x : ", x(i), i )
-            return x(i); })
+        .attr('x', function (d, i) {
+
+            console.log("x : ", x(i), i)
+            return x(i);
+        })
         .attr('y', function (d) {
 
             console.log("y : ", y(d), d);
@@ -35,12 +42,12 @@ function drawChart(data) {
         .attr('width', function (d) { return width / 3.5; })
         .style("fill", "red");
 
-    
+
 
 
 }
 
-function update(data){
+function update(data) {
     data = data;
     g.selectAll('rect').data(data).transition()
         .attr('y', function (d) {
