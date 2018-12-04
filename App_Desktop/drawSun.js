@@ -1,14 +1,15 @@
-var width = 960;
-var bottom = 400;
-var height = 500;
-var r = 250;
+var width = 400;
+var bottom = 200;
+var height = 250;
+var r = bottom/1.2;
 var svg;
 var image;
+var radius;
 
 function drawSun(angle){
 
     
-	svg = d3.select("body").append("svg")
+	svg = d3.select("#sunTrajectory").append("svg")
 	  .attr("width", width)
 	  .attr("height", height)
 	
@@ -22,6 +23,16 @@ function drawSun(angle){
 	.style("stroke", 'grey')
 	.style("fill", 'grey')
 	.attr("d", arc)
+	
+	radius = svg.append("line")
+	
+	radius.style("stroke", "grey")  // colour the line
+	//radius.style("stroke-dasharray", "grey")
+    .attr("x1", width/2)     // x position of the first end of the line
+    .attr("y1", bottom)      // y position of the first end of the line
+    .attr("x2", width/2 + Math.cos(angle*Math.PI/180)*r)     // x position of the second end of the line
+    .attr("y2", bottom- Math.sin(angle*Math.PI/180)*r)
+    .style('stroke-dasharray', '5,3');
 	
 	image = svg.append('svg:image')
 	
@@ -41,7 +52,7 @@ function drawSun(angle){
 	
 	svg.append("rect")
 		.attr("x", 0)
-		.attr("y", height-90)
+		.attr("y", bottom+5)
 	  .attr("width", width)
 	  .attr("height", 100)
 	.attr("fill", "white")
@@ -57,6 +68,13 @@ function updateSun(angle){
 	.attr("width", 80)
 	.attr("height", 80)
 	
+	radius.style("stroke", "grey")  // colour the line
+	//radius.style("stroke-dasharray", "grey")
+    .attr("x1", width/2)     // x position of the first end of the line
+    .attr("y1", bottom)      // y position of the first end of the line
+    .attr("x2", width/2 + Math.cos(angle*Math.PI/180)*r)     // x position of the second end of the line
+    .attr("y2", bottom- Math.sin(angle*Math.PI/180)*r)   
+    .style('stroke-dasharray', '5,3');
 }
 
 
