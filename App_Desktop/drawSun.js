@@ -16,7 +16,7 @@ function drawSun(angle){
 	let g = svg.append("g").attr("transform", "translate(" + width/2 + "," + bottom+")");
 	
 	let arc = d3.arc().innerRadius(r)
-	.outerRadius(r+2)
+	.outerRadius(r+1)
 	
 	var path = g.append("path")
 	.datum({endAngle:-Math.PI/2, startAngle:Math.PI/2})
@@ -62,14 +62,16 @@ function updateSun(angle){
 	
 	image.attr('xlink:href', 'https://st2.depositphotos.com/6025596/11754/v/950/depositphotos_117540510-stock-illustration-sun-icon-light-sign-isolated.jpg')
 	.attr("r", 40)
+	.transition()
 	  .attr("x", width/2 + Math.cos(angle*Math.PI/180)*r-40)
 	  .attr("y", bottom- Math.sin(angle*Math.PI/180)*r-40)
 	.attr("fill", "yellow")
 	.attr("width", 80)
 	.attr("height", 80)
 	
-	radius.style("stroke", "grey")  // colour the line
+	radius.style("stroke", "blue")  // colour the line
 	//radius.style("stroke-dasharray", "grey")
+	.transition()
     .attr("x1", width/2)     // x position of the first end of the line
     .attr("y1", bottom)      // y position of the first end of the line
     .attr("x2", width/2 + Math.cos(angle*Math.PI/180)*r)     // x position of the second end of the line
