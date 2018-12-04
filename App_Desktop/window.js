@@ -15,11 +15,12 @@ function updatePhotoValuesChart() {
     
     angle = (angle+5)%180
     
-    sun.sunTraj(angle)
+    sun.updateSun(angle)
 
 }
 
 $(() => {
+	sun.drawSun(angle)
     chart.drawChart([50, 300, 200]);
     updatePhotoValuesChart();
     
