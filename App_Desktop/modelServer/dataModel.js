@@ -150,7 +150,28 @@ async function computePhotoValue() {
 // -----------------------------------
 
 async function getOnlineData() {
-  return []
+
+  let apis = []
+  apis.push('https://api.sunrise-sunset.org/json?lat=36.7201600&lng=-4.4203400')
+
+  let returns = []
+
+  for(let api of apis) {
+
+    let options = {
+      uri: api,
+      method: 'GET',
+      json: true
+    }
+
+    let data = await request(options)
+
+    returns.push(data)
+  }
+
+  console.log(returns)
+
+  return returns
 }
 
 // -----------------------------------
