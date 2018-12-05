@@ -1,7 +1,7 @@
 
 const express = require('express');
 
-const serial = require('./serial.js');
+const dataModel = require('dataModel.js')
 
 
 let app = express();

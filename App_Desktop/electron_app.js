@@ -2,6 +2,7 @@
 
 const common = require('./common.js');
 
+
 const { app, BrowserWindow } = require('electron')
 
 function createWindow() {
