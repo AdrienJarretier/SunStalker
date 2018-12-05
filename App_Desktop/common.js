@@ -8,3 +8,8 @@ exports.modelServerConfig = {
     port: 6138
 
 }
+
+exports.centralServerConfig = {
+
+	port: 2934
+}

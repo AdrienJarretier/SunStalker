@@ -1,3 +1,7 @@
+
+const common = require('../common.js')
+const config = common.centralServerConfig
+
 var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
@@ -54,6 +58,6 @@ app.get("/getFullOrient", (req, res, next) => {
 
 // ----------------------------------------------------------
 
-app.listen(8080, () => {
-  console.log("SunStalker central server listening on 8080");
+app.listen(config.port, () => {
+  console.log("SunStalker central server listening on " + config.port);
 });

@@ -1,5 +1,8 @@
+
+const common = require('../common.js')
+
 const serial = require('./serial.js')
-const request = require('request-promise');
+const request = require('request-promise-native');
 const fs = require('fs')
 
 serial.start()
@@ -11,7 +14,7 @@ let heliotData = null
 
 let tokenPath = 'SunStalkerToken.tkn'
 let SunStalkerToken = null
-let SunStalkerServerUrl = 'http://localhost:8080'
+let SunStalkerServerUrl = 'http://localhost:' + common.centralServerConfig.port
 
 let myToken = null
 
