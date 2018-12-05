@@ -93,32 +93,55 @@ async function computeSunPosition() {
 // ------------------------------------------------ INTERFACE ---
 
 // -------------------------------------------
+
+/**
+ * return 3 elements array containing the average values of photo cells from all arduinos connected to central server
+ */
 exports.getPhotoValues = async function() {
 	return await computePhotoValue()
 }
 
+
+/**
+ * return 3 elements array containing the values of photo cells from the locally connected arduino
+ */
 exports.getLocalPhotoValue = async function() {
 	return getLocalPhotoValue()
 }
 
+/**
+ * return a number between 0 and 1, corresponding to an angle of 0 to one rad
+ */
 exports.getSunPosition = async function() {
 	return await computeSunPosition()
 }
 
+/**
+ * return 
+ */
 exports.getHeliotPosition = async function() {
 	return getHeliotPosition()
 }
 
+/**
+ * return 
+ */
 exports.getHeliotPower = async function() {
   return 0
 }
 
 // -------------------------------------------
+/**
+ * return 
+ */
 exports.setHeliotPosition = function(position) {
 	serial.sendHeliot([1,position]);
 }
 
 // -------------------------------------------
+/**
+ * return the serial interface object handler
+ */
 exports.getSerialInterface = function() {
 	return serial
 }

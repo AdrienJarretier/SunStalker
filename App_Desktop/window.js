@@ -1,5 +1,7 @@
 'use strict';
 
+const dataModel = require('./dataModel.js');
+
 const chart = require('./chart.js');
 const sun = require('./drawSun.js');
 

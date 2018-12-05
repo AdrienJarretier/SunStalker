@@ -39,13 +39,14 @@ function drawChart(data) {
         .attr('height', function (d) { return y(d); })
         .attr('width', function (d) { return width / 3.5; })
         .style("fill", "orange");
-        
+
     let names = ["EAST", "AZIMUT", "WEST"]
     g.selectAll('text').data(data).enter().append('text')
-    .attr("x", function (d, i) { return i*width/3 +width/12})
-    .attr("y", height-100)
-    .text(function (d, i) { 
-		return names[i];});
+        .attr("x", function (d, i) { return i * width / 3 + width / 12 })
+        .attr("y", height - 100)
+        .text(function (d, i) {
+            return names[i];
+        });
 }
 
 function update(data) {
@@ -54,7 +55,7 @@ function update(data) {
         .attr('y', function (d) {
             return 200 - y(d);
         })
-        .attr('height', function (d) { return y(d);})
+        .attr('height', function (d) { return y(d); })
 }
 
 exports.drawChart = drawChart
