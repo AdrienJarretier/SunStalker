@@ -4,7 +4,11 @@ console.log('opening system...')
 
 dataModel.getSerialInterface().bindToSensorConnect(function() {
 	dataModel.getSerialInterface().bindToSensorData(function(data) {
-		console.log('SENSOR:',data)
+    dataModel.getSunPosition().then(function(photos) {
+    
+      console.log('SUN POSITION:',photos)
+
+    })
 	})
 })
 

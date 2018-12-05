@@ -10,8 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.16.4",
     "install": "^0.12.2",
     "npm": "^6.4.1",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
     "serialport": "^7.0.2",
     "usb-detection": "^4.1.0"
   },
