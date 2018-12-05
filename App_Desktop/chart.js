@@ -59,4 +59,3 @@ function update(data) {
 
 exports.drawChart = drawChart
 exports.update = update
-

@@ -37,6 +37,7 @@ function drawSun(angle){
 	image = svg.append('svg:image')
 	
 	image.attr('xlink:href', 'https://st2.depositphotos.com/6025596/11754/v/950/depositphotos_117540510-stock-illustration-sun-icon-light-sign-isolated.jpg')
+	//image.attr('xlink:href', 'https://forge.univ-lyon1.fr/p1707998/sunstalker/blob/dataModel/_graphisme/logo-128.png')
 	.attr("r", 40)
 	  .attr("x", width/2 + Math.cos(angle*Math.PI/180)*r-40)
 	  .attr("y", bottom- Math.sin(angle*Math.PI/180)*r-40)
@@ -59,7 +60,7 @@ function drawSun(angle){
 }
 
 function updateSun(angle){
-	
+	//image.attr('xlink:href', 'https://forge.univ-lyon1.fr/p1707998/sunstalker/blob/dataModel/_graphisme/logo-128.png')
 	image.attr('xlink:href', 'https://st2.depositphotos.com/6025596/11754/v/950/depositphotos_117540510-stock-illustration-sun-icon-light-sign-isolated.jpg')
 	.attr("r", 40)
 	.transition()

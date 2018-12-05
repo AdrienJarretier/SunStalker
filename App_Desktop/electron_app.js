@@ -8,7 +8,8 @@ function createWindow() {
     // Create the browser window.
     let win = new BrowserWindow({
         width: common.WINDOW.WIDTH,
-        height: common.WINDOW.HEIGHT
+        height: common.WINDOW.HEIGHT,
+        icon: 'logo-128.png'
     })
 
     // and load the index.html of the app.
