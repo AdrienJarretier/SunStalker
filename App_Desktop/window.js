@@ -43,7 +43,7 @@ function updateSun() {
 
         sun.updateSun(data * 180)
 
-        setTimeout(updatePhotoValuesChart, 100);
+        setTimeout(updateSun, 100);
 
     }, (err) => {
 

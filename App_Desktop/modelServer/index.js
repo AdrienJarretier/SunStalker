@@ -46,9 +46,8 @@ app.get('/getSunPosition', function (req, res) {
 
   pr.then((v) => {
 
-    console.log(v)
 
-    res.json(Math.max(v) == v[0] ? 0 : Math.max(v) == v[1] ? 0.5 : 1)
+    res.json(Math.max(...v) == v[0] ? 0 : Math.max(...v) == v[1] ? 0.5 : 1)
 
   })
 
