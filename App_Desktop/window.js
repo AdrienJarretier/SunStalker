@@ -9,22 +9,8 @@ const rp = require('request-promise-native')
 
 let i = 0;
 let angle = 0;
-<<<<<<< HEAD
 let powerDatas = [];
 
-function updatePhotoValuesChart() {
-	i = i+1
-    let data = [Math.random() * 200, Math.random() * 200, Math.random() * 200]
-    chart.update(data);
-    setTimeout(updatePhotoValuesChart, 1000);
-    angle = (angle+5)%180
-    sun.updateSun(angle)
-    powerDatas.push({
-            date: i,
-            value: Math.random()*205
-        })	
-    power.updatePower(powerDatas)
-=======
 function updatePhotoValuesChart() {
 
     rp({
@@ -36,7 +22,7 @@ function updatePhotoValuesChart() {
     }).then((data) => {
 
         chart.update(data);
-        // updatePhotoValuesChart();
+
         setTimeout(updatePhotoValuesChart, 100);
 
     }, (err) => {
@@ -68,12 +54,6 @@ function updateSun() {
         console.log('error when getting PhotoValues')
 
     })
-
-
-
-
-
->>>>>>> cd22c84603bf3bdc66038e9a7bfc09472429c797
 }
 
 
@@ -88,16 +68,8 @@ $(() => {
     chart.drawChart([50, 300, 200]);
     power.drawPower(powerDatas);
     updatePhotoValuesChart();
-<<<<<<< HEAD
-    powerDatas.push({
-            date: i,
-            value: Math.random()*205
-        })
-    
-=======
+
     updateSun();
-
-
->>>>>>> cd22c84603bf3bdc66038e9a7bfc09472429c797
     updateTime();
+    
 })
