@@ -1,36 +1,87 @@
 const serial = require('./serial.js')
+const request = require('request-promise');
+const fs = require('fs')
 
 serial.start()
+
 let sensorBinded = false
 let sensorData = null
 let heliotBinded = false
 let heliotData = null
+
+let tokenPath = 'SunStalkerToken.tkn'
+let SunStalkerToken = null
+let SunStalkerServerUrl = 'http://localhost:8080'
+
+let myToken = null
+
+// --------------------------------------------------------------
+// -------------------------------------------------- BINDERS ---
+
+serial.bindToSensorData(function(data) {
+  sensorData = data
+  sendOrientationData(data)
+  .catch(function(error){})
+})
+serial.bindToSensorDisconnect(function() {
+  sensorData = null
+})
+
+// --------------------------------------------------------------
+// ------------------------------------------------ SEND DATA ---
+
+async function getToken() {
+
+  if(myToken != null) {
+    return myToken
+  }
+
+  let options = {
+    uri: SunStalkerServerUrl + '/requireToken',
+    method: 'GET',
+  }
+
+  myToken = await request(options)
+
+  return myToken
+}
+// -----------------------------
+async function sendOrientationData(orientation) {
+
+  let token = await getToken()
+
+  let options = {
+    uri: SunStalkerServerUrl+'/setMyOrientation',
+    method: 'POST',
+    json: true,
+    body: {'token': token, 'orientData': JSON.stringify(orientation)}
+  }
+
+  let resp = await request(options)
+
+}
 
 // --------------------------------------------------------------
 // -------------------------------------------- RETRIEVE DATA ---
 
 // ----------------------------------------- OUR DATA
 async function getOnlinePhotoValues() {
-	return [[523, 230, 201],[523, 230, 201],[523, 230, 201]]
+
+  let options = {
+    uri: SunStalkerServerUrl+'/getFullOrient',
+    method: 'GET',
+    json: true,
+  }
+
+  let positions = await request(options)
+
+  console.log('all positions',positions)
+
+  return positions
 }
 
 function getLocalPhotoValue() {
 
-	if(serial.isSensorConnected()) {
-
-		if(!sensorBinded) {
-			sensorBinded = true
-			serial.bindToSensorData(function(data) {
-				sensorData = data
-			})
-			serial.bindToSensorDisconnect(function() {
-				sensorData = null
-				sensorBinded = false
-			})
-		}
-
-	}
-	console.log('sensorData:',sensorData)
 	return sensorData
 
 }
@@ -51,7 +102,6 @@ function getHeliotPosition() {
 		}
 
 	}
-	console.log('heliotData:',heliotData)
 	return heliotData
 }
 
@@ -65,7 +115,14 @@ function getHeliotPosition() {
 async function computePhotoValue() {
 
 	let localPhoto = await getLocalPhotoValue()
-	let onlinePhoto = await getOnlinePhotoValues()
+  try {
+	 let onlinePhoto = await getOnlinePhotoValues()
+  } catch(error) {
+    onlinePhoto = []
+  }
+
+  if(onlinePhoto.length == 0)
+    return null
 
 	let computedValues = localPhoto
 
@@ -85,7 +142,34 @@ async function computePhotoValue() {
 
 async function computeSunPosition() {
 
-	let photoValues = await computePhotoValue()
+	let photoValues = await getLocalPhotoValue()
+
+  let minValue = Math.min(photoValues[0],photoValues[1],photoValues[2])
+
+  let west = photoValues[0] - minValue
+  let zenith = photoValues[1] - minValue
+  let east = photoValues[2] - minValue
+
+  if(west == east)
+    return 90
+
+  if(east == 0) {
+    let maxValue = Math.max(west,zenith)
+    let ratio = maxValue / 45
+    west = west * ratio
+    zenith = zenith * ratio
+    return  45 + zenith - west
+  }
+
+  if(west == 0) {
+    let maxValue = Math.max(east,zenith)
+    let ratio = maxValue / 45
+    east = east * ratio
+    zenith = zenith * ratio
+    return  (90+45) - zenith + east
+  }
+
+  return 0
 
 }
 
@@ -127,7 +211,7 @@ exports.getHeliotPosition = async function() {
  * return 
  */
 exports.getHeliotPower = async function() {
-  return 0
+  return Math.random() * 205
 }
 
 // -------------------------------------------
