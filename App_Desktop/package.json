@@ -9,7 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "serialport": "^7.0.2"
+    "express": "^4.16.4",
+    "request-promise-native": "^1.0.5",
+    "serialport": "^7.1.0",
+    "usb-detection": "^4.1.0"
   },
   "devDependencies": {
     "electron": "^3.0.10"
