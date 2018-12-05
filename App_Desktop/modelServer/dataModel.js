@@ -21,11 +21,14 @@ let myToken = null
 // --------------------------------------------------------------
 // -------------------------------------------------- BINDERS ---
 
-serial.bindToSensorData(function(data) {
+serial.bindToSensorData(async function(data) {
   sensorData = data
-  sendOrientationData(data)
-  .catch(function(error){})
+  if(myToken != null)
+    sendOrientationData(data)
+  else
+    getToken()
 })
+
 serial.bindToSensorDisconnect(function() {
   sensorData = null
 })
@@ -44,7 +47,12 @@ async function getToken() {
     method: 'GET',
   }
 
-  myToken = await request(options)
+  try {
+    myToken = await request(options)
+  }
+  catch(error) {
+    return null
+  }
 
   return myToken
 }
@@ -57,10 +65,13 @@ async function sendOrientationData(orientation) {
     uri: SunStalkerServerUrl+'/setMyOrientation',
     method: 'POST',
     json: true,
-    body: {'token': token, 'orientData': JSON.stringify(orientation)}
+    body: {'token': token, 'orientData': orientation}
   }
 
-  let resp = await request(options)
+  try {
+    let resp = await request(options)
+  }
+  catch(error) {}
 
 }
 
@@ -158,7 +169,7 @@ async function computeSunPosition() {
 
   if(east == 0) {
     let maxValue = Math.max(west,zenith)
-    let ratio = maxValue / 45
+    let ratio = 45 / maxValue
     west = west * ratio
     zenith = zenith * ratio
     return  45 + zenith - west
@@ -166,7 +177,7 @@ async function computeSunPosition() {
 
   if(west == 0) {
     let maxValue = Math.max(east,zenith)
-    let ratio = maxValue / 45
+    let ratio = 45 / maxValue
     east = east * ratio
     zenith = zenith * ratio
     return  (90+45) - zenith + east
