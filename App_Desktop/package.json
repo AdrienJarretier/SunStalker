@@ -2,15 +2,15 @@
   "name": "SA",
   "version": "0.2.0",
   "description": "",
-  "main": "electron_app.js",
+  "main": "index.js",
   "scripts": {
     "start": "electron ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "install": "^0.12.2",
-    "npm": "^6.4.1",
+    "express": "^4.16.4",
+    "request-promise-native": "^1.0.5",
     "serialport": "^7.0.2",
     "usb-detection": "^4.1.0"
   },
