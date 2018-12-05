@@ -1,5 +1,7 @@
 const dataModel = require('./dataModel.js')
 
+console.log('opening system...')
+
 dataModel.getSerialInterface().bindToSensorConnect(function() {
 	dataModel.getSerialInterface().bindToSensorData(function(data) {
 		console.log('SENSOR:',data)

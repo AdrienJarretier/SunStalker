@@ -10,9 +10,8 @@ let heliotData = null
 // -------------------------------------------- RETRIEVE DATA ---
 
 // ----------------------------------------- OUR DATA
-function getOnlinePhotoValues() {
+async function getOnlinePhotoValues() {
 	return [[523, 230, 201],[523, 230, 201],[523, 230, 201]]
-	// [data,data,data] / [null,null,null]
 }
 
 function getLocalPhotoValue() {
@@ -62,10 +61,11 @@ function getHeliotPosition() {
 // --------------------------------------------------------------
 // --------------------------------------------- COMPUTE DATA ---
 
-function computePhotoValue() {
 
-	let localPhoto = getLocalPhotoValue()
-	let onlinePhoto = getOnlinePhotoValues()
+async function computePhotoValue() {
+
+	let localPhoto = await getLocalPhotoValue()
+	let onlinePhoto = await getOnlinePhotoValues()
 
 	let computedValues = localPhoto
 
@@ -82,35 +82,10 @@ function computePhotoValue() {
 	return computedValues
 }
 // -----------------------------------
-function positionFunction(east, zenith, west) {
 
-	let sunPosition = null
+async function computeSunPosition() {
 
-	if(east > west && zenith > west) {
-
-		sunPosition = (zenith - east)*90 + 45
-
-	}
-	else if(west > east && zenith > east) {
-
-		sunPosition = (west - zenith)*90 + 45 + 90
-	}
-
-	return sunPosition
-
-}
-
-function normalize(photoSensorSet) {
-
-	return photoSensorSet
-
-}
-
-function computeSunPosition() {
-
-	let photoValues = computePhotoValue()
-	photoValues = normalize(photoValues)
-	return positionFunction(photoValues[0],photoValues[1],photoValues[2])
+	let photoValues = await computePhotoValue()
 
 }
 
@@ -118,26 +93,28 @@ function computeSunPosition() {
 // ------------------------------------------------ INTERFACE ---
 
 // -------------------------------------------
-exports.getPhotoValues = function() {
-	return computePhotoValue()
+exports.getPhotoValues = async function() {
+	return await computePhotoValue()
 }
 
-exports.getLocalPhotoValue = function() {
+exports.getLocalPhotoValue = async function() {
 	return getLocalPhotoValue()
 }
 
-exports.getSunPosition = function() {
-	return computeSunPosition()
+exports.getSunPosition = async function() {
+	return await computeSunPosition()
 }
 
-exports.getHeliotPosition = function() {
+exports.getHeliotPosition = async function() {
 	return getHeliotPosition()
+}
+
+exports.getHeliotPower = async function() {
+  return 0
 }
 
 // -------------------------------------------
 exports.setHeliotPosition = function(position) {
-	
-	// [ <byte saying their is data> , <position> ]
 	serial.sendHeliot([1,position]);
 }
 
