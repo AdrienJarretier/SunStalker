@@ -89,8 +89,6 @@ async function getOnlinePhotoValues() {
 
   let positions = await request(options)
 
-  console.log('all positions',positions)
-
   return positions
 }
 
@@ -135,9 +133,6 @@ async function computePhotoValue() {
     onlinePhoto = []
   }
 
-  if(onlinePhoto.length == 0)
-    return null
-
 	let computedValues = localPhoto
 
 	for(let data of onlinePhoto){
@@ -156,7 +151,7 @@ async function computePhotoValue() {
 
 async function computeSunPosition() {
 
-	let photoValues = await getLocalPhotoValue()
+	let photoValues = await computePhotoValue()
 
   let minValue = Math.min(photoValues[0],photoValues[1],photoValues[2])
 
@@ -166,6 +161,8 @@ async function computeSunPosition() {
 
   if(west == east)
     return 90
+
+  let mid = Math.abs(west - east) / 2
 
   if(east == 0) {
     let maxValue = Math.max(west,zenith)
