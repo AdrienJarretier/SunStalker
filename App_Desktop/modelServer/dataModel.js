@@ -149,9 +149,16 @@ async function computePhotoValue() {
 }
 // -----------------------------------
 
+async function getOnlineData() {
+  return []
+}
+
+// -----------------------------------
+
 async function computeSunPosition() {
 
 	let photoValues = await computePhotoValue()
+  let onlineData = await getOnlineData()
 
   let minValue = Math.min(photoValues[0],photoValues[1],photoValues[2])
 
