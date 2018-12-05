@@ -110,7 +110,7 @@ exports.getLocalPhotoValue = async function() {
 }
 
 /**
- * return a number between 0 and 1, corresponding to an angle of 0 to one rad
+ * return a number between 0 and 1, corresponding to an angle of 0 to 180 degrees
  */
 exports.getSunPosition = async function() {
 	return await computeSunPosition()

@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.16.4",
+    "request-promise-native": "^1.0.5",
     "serialport": "^7.1.0",
     "usb-detection": "^4.1.0"
   },

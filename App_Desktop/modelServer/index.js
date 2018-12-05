@@ -1,26 +1,64 @@
 
 const express = require('express');
 
-const dataModel = require('dataModel.js')
+const common = require('../common.js')
+
+const config = common.modelServerConfig
+
+const dataModel = require('./dataModel.js')
 
 
 let app = express();
 
 
+let apiIRIS = ['getLocalPhotoValue', 'getSunPosition']
+
+
+app.get('/', function (req, res) {
+
+  res.send(
+    '<ul>'
+    + '<li><a href="getLocalPhotoValue">getLocalPhotoValue</a></li>'
+    + '<li><a href="getSunPosition">getSunPosition</a></li>'
+    + '</ul>'
+  )
+
+})
 
 
 
-app.get('/', function(req, res) {
+app.get('/getLocalPhotoValue', function (req, res) {
 
-    res.json(serial.data);
+  let pr = dataModel.getLocalPhotoValue()
+
+  pr.then((v) => {
+
+    res.json(v)
+
+  })
+
+})
+
+
+app.get('/getSunPosition', function (req, res) {
+
+  let pr = dataModel.getLocalPhotoValue()
+
+  pr.then((v) => {
+
+    console.log(v)
+
+    res.json(Math.max(v) == v[0] ? 0 : Math.max(v) == v[1] ? 0.5 : 1)
+
+  })
 
 })
 
 let server = require('http').Server(app);
 
 // le serveur attend les connexions sur le port 'config.port'
-server.listen(8090, function() {
+server.listen(config.port, function () {
 
-  console.log('listening on *:' + 8090);
+  console.log('listening on *:' + config.port);
 
 });
