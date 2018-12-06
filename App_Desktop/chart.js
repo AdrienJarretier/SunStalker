@@ -1,7 +1,7 @@
 
 'use strict';
 
-const common = require('./common.js');
+const common = require('../common.js');
 
 
 let g;
