@@ -4,7 +4,6 @@ const chart = require('./chart.js');
 const sun = require('./drawSun.js');
 const power = require('./lineChart.js');
 
-
 const rp = require('request-promise-native')
 
 let i = 0;

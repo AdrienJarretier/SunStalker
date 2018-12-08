@@ -3,6 +3,7 @@
 const chart = require('./chart.js');
 const sun = require('./drawSun.js');
 const power = require('./lineChart.js');
+const request = require('./getSunHours.js');
 
 
 
@@ -33,6 +34,7 @@ function updateTime() {
 
 
 $(() => {
+	request.getHour()
     sun.drawSun(angle)
     chart.drawChart([50, 300, 200]);
 	powerDatas.push({
