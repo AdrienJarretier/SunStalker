@@ -34,7 +34,7 @@ function updateTime() {
 
 
 $(() => {
-	request.getHour()
+	
     sun.drawSun(angle)
     chart.drawChart([50, 300, 200]);
 	powerDatas.push({

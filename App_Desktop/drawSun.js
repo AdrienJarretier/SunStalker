@@ -6,6 +6,9 @@ var svg;
 var image;
 var radius;
 
+const request = require('./getSunHours.js');
+
+
 function drawSun(angle) {
 
 
@@ -56,6 +59,23 @@ function drawSun(angle) {
 		.attr("width", width)
 		.attr("height", 100)
 		.attr("fill", "white")
+	
+	request.getHour()
+	sunrise = request.getSunRise()
+	sunset = request.getSunSet()
+	
+	console.log('hours :', sunrise, sunset);
+	
+	svg.append("text")
+		.attr("x", 0)
+		.attr("y", bottom + 20)
+		.text(sunrise)
+		
+	svg.append("text")
+		.attr("x", width-100)
+		.attr("y", bottom + 20)
+		.text(sunset)
+		
 }
 
 function updateSun(angle){

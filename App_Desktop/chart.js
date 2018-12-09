@@ -9,7 +9,9 @@ let data;
 let y;
 let x;
 
+
 function drawChart(data) {
+	
     data = data;
     let width = common.WINDOW.WIDTH / 2;
     let height = width / ((1 + Math.sqrt(5)) / 2);
@@ -47,6 +49,8 @@ function drawChart(data) {
         .text(function (d, i) {
             return names[i];
         });
+        
+    
 }
 
 function update(data) {
