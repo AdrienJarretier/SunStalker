@@ -12,8 +12,6 @@ let width;
 let height;
 let x_scale;
 let y_scale;
-var x_axis;
-var y_axis;
 
 var margin = { top: 20, right: 20, bottom: 30, left: 50 };
 
@@ -37,20 +35,11 @@ function drawPower(data) {
 
     x_scale.domain([0, data.length]);
     y_scale.domain([0, 205]);
-    
-    x_axis = d3.axisBottom()
-                   .scale(x_scale);
-                   
-    y_axis = d3.axisLeft()
-                  .scale(y_scale);
-
 
 	g = svg.append("g")
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")"
-        )
-        .call(x_axis)
-        .call(y_axis);
+        );
 	
 	g.append("text")
     .text("Heliot's power in time")
@@ -77,13 +66,8 @@ function drawPower(data) {
 function updatePower(data) {
 	console.log(data.value)
 	x_scale.domain([0, data.length]);
-	x_axis.scale(x_scale);
-	
-    g.select(".path")   
+    g.select(".path")   // change the line
         .attr("d", line);
-    g.call(x_axis);
-    g.call(y_axis);
-    
 }
 
 exports.drawPower = drawPower
