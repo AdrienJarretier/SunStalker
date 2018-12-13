@@ -21,11 +21,14 @@ let myToken = null
 // --------------------------------------------------------------
 // -------------------------------------------------- BINDERS ---
 
-serial.bindToSensorData(function(data) {
+serial.bindToSensorData(async function(data) {
   sensorData = data
-  sendOrientationData(data)
-  .catch(function(error){})
+  if(myToken != null)
+    sendOrientationData(data)
+  else
+    getToken()
 })
+
 serial.bindToSensorDisconnect(function() {
   sensorData = null
 })
@@ -44,7 +47,12 @@ async function getToken() {
     method: 'GET',
   }
 
-  myToken = await request(options)
+  try {
+    myToken = await request(options)
+  }
+  catch(error) {
+    return null
+  }
 
   return myToken
 }
@@ -57,10 +65,13 @@ async function sendOrientationData(orientation) {
     uri: SunStalkerServerUrl+'/setMyOrientation',
     method: 'POST',
     json: true,
-    body: {'token': token, 'orientData': JSON.stringify(orientation)}
+    body: {'token': token, 'orientData': orientation}
   }
 
-  let resp = await request(options)
+  try {
+    let resp = await request(options)
+  }
+  catch(error) {}
 
 }
 
@@ -77,8 +88,6 @@ async function getOnlinePhotoValues() {
   }
 
   let positions = await request(options)
-
-  console.log('all positions',positions)
 
   return positions
 }
@@ -124,9 +133,6 @@ async function computePhotoValue() {
     onlinePhoto = []
   }
 
-  if(onlinePhoto.length == 0)
-    return null
-
 	let computedValues = localPhoto
 
 	for(let data of onlinePhoto){
@@ -143,9 +149,37 @@ async function computePhotoValue() {
 }
 // -----------------------------------
 
+async function getOnlineData() {
+
+  let apis = []
+  apis.push('https://api.sunrise-sunset.org/json?lat=36.7201600&lng=-4.4203400')
+
+  let returns = []
+
+  for(let api of apis) {
+
+    let options = {
+      uri: api,
+      method: 'GET',
+      json: true
+    }
+
+    let data = await request(options)
+
+    returns.push(data)
+  }
+
+  console.log(returns)
+
+  return returns
+}
+
+// -----------------------------------
+
 async function computeSunPosition() {
 
-	let photoValues = await getLocalPhotoValue()
+	let photoValues = await computePhotoValue()
+  let onlineData = await getOnlineData()
 
   let minValue = Math.min(photoValues[0],photoValues[1],photoValues[2])
 
@@ -156,9 +190,11 @@ async function computeSunPosition() {
   if(west == east)
     return 90
 
+  let mid = Math.abs(west - east) / 2
+
   if(east == 0) {
     let maxValue = Math.max(west,zenith)
-    let ratio = maxValue / 45
+    let ratio = 45 / maxValue
     west = west * ratio
     zenith = zenith * ratio
     return  45 + zenith - west
@@ -166,7 +202,7 @@ async function computeSunPosition() {
 
   if(west == 0) {
     let maxValue = Math.max(east,zenith)
-    let ratio = maxValue / 45
+    let ratio = 45 / maxValue
     east = east * ratio
     zenith = zenith * ratio
     return  (90+45) - zenith + east
