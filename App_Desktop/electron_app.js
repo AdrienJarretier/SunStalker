@@ -1,6 +1,6 @@
 'use strict'
 
-const common = require('./common.js');
+const common = require('../common.js');
 
 
 const { app, BrowserWindow } = require('electron')
