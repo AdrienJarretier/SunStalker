@@ -79,46 +79,27 @@ async function getToken() {
   return myToken
 }
 // -----------------------------
-async function sendOrientationData(orientation) {
+async function sendData(objectType, objectData) {
 
   let token = await getToken()
 
   let options = {
-    uri: SunStalkerServerUrl+'/setMyOrientation',
+    uri: SunStalkerServerUrl+'/setMyData',
     method: 'POST',
     json: true,
-    body: {'token': token, 'orientData': orientation}
+    body: {'token':token,'objectType':objectType,'objectData':objectData}
   }
 
   try {
     let resp = await request(options)
   }
   catch(error) {}
-
-}
-// -----------------------------
-async function sendHeliotData(heliotData) {
-
-  let token = await getToken()
-
-  let options = {
-    uri: SunStalkerServerUrl+'/setMyHeliotData',
-    method: 'POST',
-    json: true,
-    body: {'token': token, 'heliotData': heliotData}
-  }
-
-  try {
-    let resp = await request(options)
-  }
-  catch(error) {}
-
 }
 // -----------------------------
 async function sendObject(type,object) {
 
   let options = {
-    uri: SunStalkerServerUrl+'/setObject',
+    uri: SunStalkerServerUrl+'/setMyObject',
     method: 'POST',
     json: true,
     body: {'token': token, 'objectType': type, 'object':object}
@@ -128,7 +109,15 @@ async function sendObject(type,object) {
     let resp = await request(options)
   }
   catch(error) {}
+}
+// -----------------------------
+async function sendOrientationData(orientation) {
+  await sendData('Sensor', orientation)
+}
+// -----------------------------
+async function sendHeliotData(heliotData) {
 
+  await sendData('Heliot', {'position':heliotData[0],'power':heliotData[1])
 }
 
 // --------------------------------------------------------------
@@ -191,8 +180,8 @@ async function generateHeliotWoT() {
     'Heliot',
     'Solar panel orienting itslef to always face the sun',
     {
-      'HeliotPosition':wot.const.dataType.number,
-      'HeliotPower':wot.const.dataType.number
+      'position':wot.const.dataType.number,
+      'power':wot.const.dataType.number
     })
   return heliotWoT
 }
