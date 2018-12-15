@@ -99,6 +99,19 @@ async function retrieveAllObject(token) {
   }
 }
 
+async function getOnlinePhotoValues() {
+
+  let options = {
+    uri: SunStalkerServerUrl+'/getFullOrient',
+    method: 'GET',
+    json: true,
+  }
+
+  let positions = await request(options)
+
+  return positions
+}
+
 // -------------------------------------------------------
 
 async function main() {
@@ -132,7 +145,9 @@ async function main() {
   console.log(resp)
 
   // ----- retrive orientations
-  resp = await sendData('Sensor',{'myData':[0,1,2,3]})
+  resp = await sendData('Sensor',{'photoCellValues':[0,1,2]})
+  console.log(resp)
+  resp = await getOnlinePhotoValues()
   console.log(resp)
 }
 

@@ -26,8 +26,8 @@ function getFullOrient() {
 
   let orients = []
   for(let token in appObjects) {
-    if(objectData[token].Sensor != null)
-      orients.push(objectsMap[objectData[token].Sensor].photoCellValues)
+    if(appObjects[token].Sensor != null)
+      orients.push(objectsMap[appObjects[token].Sensor].data.photoCellValues)
   }
 
   return orients
@@ -179,11 +179,12 @@ app.get("/objects/:objid/:property", (req, res, next) => {
 // ----------------------
 
 app.get("/requireToken", (req, res, next) => {
-  res.json(generateToken())
+  return createJSONresponse(res,generateToken())
 });
 
 app.get("/getFullOrient", (req, res, next) => {
-  res.json(getFullOrient())
+  console.log('someone trys to get fullOrient data')
+  return createJSONresponse(res,getFullOrient())
 });
 
 // ----------------------------------------------------------
