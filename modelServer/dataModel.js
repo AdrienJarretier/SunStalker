@@ -21,6 +21,7 @@ let myToken = null
 // --------------------------------------------------------------
 // -------------------------------------------------- BINDERS ---
 
+// -------------------------- SENSOR
 serial.bindToSensorData(async function(data) {
   sensorData = data
   if(myToken != null)
@@ -28,9 +29,16 @@ serial.bindToSensorData(async function(data) {
   else
     getToken()
 })
-
 serial.bindToSensorDisconnect(function() {
   sensorData = null
+})
+
+// -------------------------- HELIOT
+serial.bindToHeliotData(async function(data) {
+  heliotData = data
+})
+serial.bindToHeliotDisconnect(function() {
+  heliotData = null
 })
 
 // --------------------------------------------------------------
@@ -100,21 +108,16 @@ function getLocalPhotoValue() {
 
 function getHeliotPosition() {
 
-	if(serial.isHeliotConnected()) {
+	if(heliotData == null)
+    return null
+  return heliotData[0]
+}
 
-		if(!heliotBinded) {
-			heliotBinded = true
-			serial.bindToHeliotData(function(data) {
-				heliotData = data
-			})
-			serial.bindToHeliotDisconnect(function() {
-				heliotData = null
-				heliotBinded = false
-			})
-		}
+function getHeliotPower() {
 
-	}
-	return heliotData
+  if(heliotData == null)
+    return null
+  return heliotData[1]
 }
 
 // ----------------------------------------- ONLINE DATA
@@ -250,7 +253,7 @@ exports.getHeliotPosition = async function() {
  * return 
  */
 exports.getHeliotPower = async function() {
-  return Math.random() * 205
+  return getHeliotPower()
 }
 
 // -------------------------------------------
