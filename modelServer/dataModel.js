@@ -29,16 +29,30 @@ serial.bindToSensorData(async function(data) {
   else
     getToken()
 })
-serial.bindToSensorDisconnect(function() {
+serial.bindToSensorDisconnect(async function() {
   sensorData = null
+  sendObject('Sensor',null)
+})
+serial.bindToSensorConnect(async function() {
+  let obj = await generateSensorWoT()
+  sendObject('Sensor',obj)
 })
 
 // -------------------------- HELIOT
 serial.bindToHeliotData(async function(data) {
   heliotData = data
+  if(myToken != null)
+    sendHeliotData(data)
+  else
+    getToken()
 })
-serial.bindToHeliotDisconnect(function() {
+serial.bindToHeliotDisconnect(async function() {
   heliotData = null
+  sendObject('Heliot',null)
+})
+serial.bindToHeliotConnect(async function() {
+  let obj = await generateHeliotWoT()
+  sendObject('Heliot',obj)
 })
 
 // --------------------------------------------------------------
@@ -81,6 +95,106 @@ async function sendOrientationData(orientation) {
   }
   catch(error) {}
 
+}
+// -----------------------------
+async function sendHeliotData(heliotData) {
+
+  let token = await getToken()
+
+  let options = {
+    uri: SunStalkerServerUrl+'/setMyHeliotData',
+    method: 'POST',
+    json: true,
+    body: {'token': token, 'heliotData': heliotData}
+  }
+
+  try {
+    let resp = await request(options)
+  }
+  catch(error) {}
+
+}
+// -----------------------------
+async function sendObject(type,object) {
+
+  let options = {
+    uri: SunStalkerServerUrl+'/setObject',
+    method: 'POST',
+    json: true,
+    body: {'token': token, 'objectType': type, 'object':object}
+  }
+
+  try {
+    let resp = await request(options)
+  }
+  catch(error) {}
+
+}
+
+// --------------------------------------------------------------
+// ------------------------------------------------------ WoT ---
+
+async function generateSunStalkerWoT(objName,description,dataAccessSet) {
+  let token = await getToken()
+  let id = 'sunstalker:'+token+':'+objName
+  let props = {}
+  for(let dataName in dataAccessSet) {
+    props[dataName] = wot.generators.createProperties(
+      true,
+      false,
+      wot.generators.createDataShema(
+        dataName,
+        dataAccessSet[dataName].type
+      ),
+      [
+        wot.generators.createForm(
+          'http://www.sunStalker.tk/objects/'+id+'/'+dataName,
+          'GET',
+          'application/json'
+        )
+      ]
+    )
+  }
+  let sensorWoT = wot.generateWoTObject(
+    id,
+    objName,
+    'Sensor giving sun position according to 3 photo receptors', 
+    undefined,
+    undefined,
+    props, 
+    undefined,
+    undefined, 
+    undefined,
+    [
+      wot.generators.createSecurityInfos(
+        wot.const.security.basic
+      )
+    ]
+  )
+  return sensorWoT
+}
+
+// --------------------- SENSOR
+async function generateSensorWoT() {
+  let sensorWoT = await generateSunStalkerWoT(
+    'Sensor',
+    'Sensor detecting sun position using 3 well positioned photoCells',
+    {
+      'photoCellValues':wot.const.dataType.array
+    })
+  return sensorWoT
+}
+
+// --------------------- HELIOT
+async function generateHeliotWoT() {
+  let heliotWoT = await generateSunStalkerWoT(
+    'Heliot',
+    'Solar panel orienting itslef to always face the sun',
+    {
+      'HeliotPosition':wot.const.dataType.number,
+      'HeliotPower':wot.const.dataType.number
+    })
+  return heliotWoT
 }
 
 // --------------------------------------------------------------
