@@ -12,6 +12,9 @@ let sensorData = null
 let heliotBinded = false
 let heliotData = null
 
+let sensorObjectOnline = false
+let heliotObjectOnline = false
+
 let tokenPath = 'SunStalkerToken.tkn'
 let SunStalkerToken = null
 let SunStalkerServerUrl = 'http://localhost:' + common.centralServerConfig.port
@@ -24,35 +27,39 @@ let myToken = null
 // -------------------------- SENSOR
 serial.bindToSensorData(async function(data) {
   sensorData = data
-  if(myToken != null)
+  if(myToken != null && sensorObjectOnline)
     sendOrientationData(data)
   else
     getToken()
 })
 serial.bindToSensorDisconnect(async function() {
   sensorData = null
-  sendObject('Sensor',null)
+  await sendObject('Sensor',null)
+  sensorObjectOnline = false
 })
 serial.bindToSensorConnect(async function() {
   let obj = await generateSensorWoT()
-  sendObject('Sensor',obj)
+  await sendObject('Sensor',obj)
+  sensorObjectOnline = true
 })
 
 // -------------------------- HELIOT
 serial.bindToHeliotData(async function(data) {
   heliotData = data
-  if(myToken != null)
+  if(myToken != null && heliotObjectOnline)
     sendHeliotData(data)
   else
     getToken()
 })
 serial.bindToHeliotDisconnect(async function() {
   heliotData = null
-  sendObject('Heliot',null)
+  await sendObject('Heliot',null)
+  heliotObjectOnline = false
 })
 serial.bindToHeliotConnect(async function() {
   let obj = await generateHeliotWoT()
-  sendObject('Heliot',obj)
+  await sendObject('Heliot',obj)
+  heliotObjectOnline = true
 })
 
 // --------------------------------------------------------------
@@ -91,9 +98,11 @@ async function sendData(objectType, objectData) {
   }
 
   try {
-    let resp = await request(options)
+    return await request(options)
   }
-  catch(error) {}
+  catch(error) {
+    return null
+  }
 }
 // -----------------------------
 async function sendObject(type,object) {
@@ -106,13 +115,15 @@ async function sendObject(type,object) {
   }
 
   try {
-    let resp = await request(options)
+    return await request(options)
   }
-  catch(error) {}
+  catch(error) {
+    return null
+  }
 }
 // -----------------------------
 async function sendOrientationData(orientation) {
-  await sendData('Sensor', orientation)
+  await sendData('Sensor', {'photoCellValues':orientation})
 }
 // -----------------------------
 async function sendHeliotData(heliotData) {
@@ -137,7 +148,7 @@ async function generateSunStalkerWoT(objName,description,dataAccessSet) {
       ),
       [
         wot.generators.createForm(
-          'http://www.sunStalker.tk/objects/'+id+'/'+dataName,
+          SunStalkerServerUrl+'/objects/'+id+'/'+dataName,
           'GET',
           'application/json'
         )
