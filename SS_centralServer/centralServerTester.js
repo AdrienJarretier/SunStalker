@@ -5,7 +5,7 @@ const request = require('request-promise-native');
 
 // ------------------------------------------------------
 
-let SunStalkerServerUrl = 'http://localhost:' + common.centralServerConfig.port
+let SunStalkerServerUrl = common.centralServerConfig.fulladdress
 let myToken = null
 
 async function getToken() {
