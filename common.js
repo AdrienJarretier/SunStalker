@@ -11,5 +11,7 @@ exports.modelServerConfig = {
 
 exports.centralServerConfig = {
 
-	port: 2934
+  address: 'http://localhost',
+	port: 2934,
+  fulladdress: 'http://localhost:2934'
 }

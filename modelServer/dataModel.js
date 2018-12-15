@@ -17,7 +17,7 @@ let heliotObjectOnline = false
 
 let tokenPath = 'SunStalkerToken.tkn'
 let SunStalkerToken = null
-let SunStalkerServerUrl = 'http://localhost:' + common.centralServerConfig.port
+let SunStalkerServerUrl = common.centralServerConfig.fulladdress
 
 let myToken = null
 
