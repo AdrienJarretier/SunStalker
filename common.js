@@ -7,7 +7,8 @@ exports.WINDOW = {
 
 exports.modelServerConfig = {
 
-  port: 6138
+  port: 6138,
+  tokenFilePath: './SunStalkerToken.tkn'
 
 }
 
