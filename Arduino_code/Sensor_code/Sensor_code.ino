@@ -5,7 +5,7 @@ int photocellReading1;
 int photocellPin2 = 2;
 int photocellReading2;
 
-int photocellPin3 = 4;
+int photocellPin3 = 5;
 int photocellReading3;
 
 // -----------------------------------------------
