@@ -5,7 +5,7 @@ const common = require('../common.js')
 
 const serial = require('./serial.js')
 const request = require('request-promise-native');
-const fs = require('fs')
+const fs = require('fs-promise')
 
 const wot = require('./WoT.js');
 
@@ -19,7 +19,7 @@ let heliotData = null
 let sensorObjectOnline = false
 let heliotObjectOnline = false
 
-let tokenPath = 'SunStalkerToken.tkn'
+let tokenPath = common.modelServerConfig.tokenFilePath
 let SunStalkerToken = null
 let SunStalkerServerUrl = common.centralServerConfig.fulladdress
 
@@ -75,13 +75,24 @@ async function getToken() {
     return myToken
   }
 
+  console.log(await fs.exists(tokenPath))
+
+  if (await fs.exists(tokenPath)) {
+    console.log('TOKEN ALREADY EXISTS')
+    myToken = await fs.readFile(tokenPath,'utf8')
+    return myToken
+  }
+
   let options = {
     uri: SunStalkerServerUrl + '/requireToken',
     method: 'GET',
+    json: true
   }
 
   try {
+    console.log('ASK FOR TOKEN')
     myToken = await request(options)
+    await fs.writeFile(tokenPath,myToken)
   }
   catch (error) {
     return null

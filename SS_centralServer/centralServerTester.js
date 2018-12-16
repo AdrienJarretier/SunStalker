@@ -2,10 +2,13 @@
 
 const common = require('../common.js')
 const request = require('request-promise-native');
+const fs = require('fs-promise')
 
 // ------------------------------------------------------
 
 let SunStalkerServerUrl = common.centralServerConfig.fulladdress
+
+let tokenPath = common.modelServerConfig.tokenFilePath
 let myToken = null
 
 async function getToken() {
@@ -14,13 +17,24 @@ async function getToken() {
     return myToken
   }
 
+  console.log(await fs.exists(tokenPath))
+
+  if (await fs.exists(tokenPath)) {
+    console.log('TOKEN ALREADY EXISTS')
+    myToken = await fs.readFile(tokenPath,'utf8')
+    return myToken
+  }
+
   let options = {
     uri: SunStalkerServerUrl + '/requireToken',
     method: 'GET',
+    json: true
   }
 
   try {
+    console.log('ASK FOR TOKEN')
     myToken = await request(options)
+    await fs.writeFile(tokenPath,myToken)
   }
   catch (error) {
     return null
@@ -117,12 +131,14 @@ async function getOnlinePhotoValues() {
 async function main() {
   let resp = null
 
+  let token = await getToken()
+
   // ----- add objects
-  resp = await sendObject('Heliot', { 'id': 'heliotid', 'desc': 'je suis un heliot' })
+  resp = await sendObject('Heliot', { 'id': 'heliotid'+token, 'desc': 'je suis un heliot' })
   console.log(resp)
   resp = await retrieveAllObject(await getToken())
   console.log(resp)
-  resp = await sendObject('Sensor', { 'id': 'sensorid', 'desc': 'je suis un sensor' })
+  resp = await sendObject('Sensor', { 'id': 'sensorid'+token, 'desc': 'je suis un sensor' })
   console.log(resp)
   resp = await retrieveAllObject(await getToken())
   console.log(resp)
@@ -131,9 +147,9 @@ async function main() {
   // ----- set object data
   resp = await sendData('Heliot', { 'myData': [0, 1, 2, 3] })
   console.log(resp)
-  resp = await getObjectData('heliotid', 'myData')
+  resp = await getObjectData('heliotid'+token, 'myData')
   console.log(resp)
-  resp = await getObjectData('sensorid', 'myData')
+  resp = await getObjectData('sensorid'+token, 'myData')
   console.log(resp)
 
   // ----- remove objects
@@ -141,11 +157,11 @@ async function main() {
   console.log(resp)
   resp = await sendData('Heliot', { 'myData': [0, 1, 2, 3] })
   console.log(resp)
-  resp = await getObjectData('heliotid', 'myData')
+  resp = await getObjectData('heliotid'+token, 'myData')
   console.log(resp)
 
   // ----- retrive orientations
-  resp = await sendData('Sensor', { 'photoCellValues': [0, 1, 2] })
+  resp = await sendData('Sensor', { 'photoCellValues': [Math.random(), Math.random(), Math.random()] })
   console.log(resp)
   resp = await getOnlinePhotoValues()
   console.log(resp)
