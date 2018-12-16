@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const common = require('../common.js')
 const request = require('request-promise-native');

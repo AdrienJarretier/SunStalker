@@ -1,3 +1,5 @@
+'use strict';
+
 
 const common = require('../common.js')
 const config = common.centralServerConfig

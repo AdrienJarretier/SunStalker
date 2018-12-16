@@ -1,9 +1,13 @@
+'use strict';
+
 
 const common = require('../common.js')
 
 const serial = require('./serial.js')
 const request = require('request-promise-native');
 const fs = require('fs')
+
+const wot = require('./WoT.js');
 
 serial.start()
 
@@ -107,6 +111,8 @@ async function sendData(objectType, objectData) {
 // -----------------------------
 async function sendObject(type,object) {
 
+  let token = await getToken()
+
   let options = {
     uri: SunStalkerServerUrl+'/setMyObject',
     method: 'POST',
@@ -128,7 +134,7 @@ async function sendOrientationData(orientation) {
 // -----------------------------
 async function sendHeliotData(heliotData) {
 
-  await sendData('Heliot', {'position':heliotData[0],'power':heliotData[1])
+  await sendData('Heliot', {'position':heliotData[0],'power':heliotData[1]})
 }
 
 // --------------------------------------------------------------
