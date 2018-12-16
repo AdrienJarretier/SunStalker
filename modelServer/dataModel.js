@@ -29,40 +29,40 @@ let myToken = null
 // -------------------------------------------------- BINDERS ---
 
 // -------------------------- SENSOR
-serial.bindToSensorData(async function(data) {
+serial.bindToSensorData(async function (data) {
   sensorData = data
-  if(myToken != null && sensorObjectOnline)
+  if (myToken != null && sensorObjectOnline)
     sendOrientationData(data)
   else
     getToken()
 })
-serial.bindToSensorDisconnect(async function() {
+serial.bindToSensorDisconnect(async function () {
   sensorData = null
-  await sendObject('Sensor',null)
+  await sendObject('Sensor', null)
   sensorObjectOnline = false
 })
-serial.bindToSensorConnect(async function() {
+serial.bindToSensorConnect(async function () {
   let obj = await generateSensorWoT()
-  await sendObject('Sensor',obj)
+  await sendObject('Sensor', obj)
   sensorObjectOnline = true
 })
 
 // -------------------------- HELIOT
-serial.bindToHeliotData(async function(data) {
+serial.bindToHeliotData(async function (data) {
   heliotData = data
-  if(myToken != null && heliotObjectOnline)
+  if (myToken != null && heliotObjectOnline)
     sendHeliotData(data)
   else
     getToken()
 })
-serial.bindToHeliotDisconnect(async function() {
+serial.bindToHeliotDisconnect(async function () {
   heliotData = null
-  await sendObject('Heliot',null)
+  await sendObject('Heliot', null)
   heliotObjectOnline = false
 })
-serial.bindToHeliotConnect(async function() {
+serial.bindToHeliotConnect(async function () {
   let obj = await generateHeliotWoT()
-  await sendObject('Heliot',obj)
+  await sendObject('Heliot', obj)
   heliotObjectOnline = true
 })
 
@@ -71,7 +71,7 @@ serial.bindToHeliotConnect(async function() {
 
 async function getToken() {
 
-  if(myToken != null) {
+  if (myToken != null) {
     return myToken
   }
 
@@ -83,7 +83,7 @@ async function getToken() {
   try {
     myToken = await request(options)
   }
-  catch(error) {
+  catch (error) {
     return null
   }
 
@@ -95,56 +95,56 @@ async function sendData(objectType, objectData) {
   let token = await getToken()
 
   let options = {
-    uri: SunStalkerServerUrl+'/setMyData',
+    uri: SunStalkerServerUrl + '/setMyData',
     method: 'POST',
     json: true,
-    body: {'token':token,'objectType':objectType,'objectData':objectData}
+    body: { 'token': token, 'objectType': objectType, 'objectData': objectData }
   }
 
   try {
     return await request(options)
   }
-  catch(error) {
+  catch (error) {
     return null
   }
 }
 // -----------------------------
-async function sendObject(type,object) {
+async function sendObject(type, object) {
 
   let token = await getToken()
 
   let options = {
-    uri: SunStalkerServerUrl+'/setMyObject',
+    uri: SunStalkerServerUrl + '/setMyObject',
     method: 'POST',
     json: true,
-    body: {'token': token, 'objectType': type, 'object':object}
+    body: { 'token': token, 'objectType': type, 'object': object }
   }
 
   try {
     return await request(options)
   }
-  catch(error) {
+  catch (error) {
     return null
   }
 }
 // -----------------------------
 async function sendOrientationData(orientation) {
-  await sendData('Sensor', {'photoCellValues':orientation})
+  await sendData('Sensor', { 'photoCellValues': orientation })
 }
 // -----------------------------
 async function sendHeliotData(heliotData) {
 
-  await sendData('Heliot', {'position':heliotData[0],'power':heliotData[1]})
+  await sendData('Heliot', { 'position': heliotData[0], 'power': heliotData[1] })
 }
 
 // --------------------------------------------------------------
 // ------------------------------------------------------ WoT ---
 
-async function generateSunStalkerWoT(objName,description,dataAccessSet) {
+async function generateSunStalkerWoT(objName, description, dataAccessSet) {
   let token = await getToken()
-  let id = 'sunstalker:'+token+':'+objName
+  let id = 'sunstalker:' + token + ':' + objName
   let props = {}
-  for(let dataName in dataAccessSet) {
+  for (let dataName in dataAccessSet) {
     props[dataName] = wot.generators.createProperties(
       true,
       false,
@@ -154,7 +154,7 @@ async function generateSunStalkerWoT(objName,description,dataAccessSet) {
       ),
       [
         wot.generators.createForm(
-          SunStalkerServerUrl+'/objects/'+id+'/'+dataName,
+          SunStalkerServerUrl + '/objects/' + id + '/' + dataName,
           'GET',
           'application/json'
         )
@@ -164,12 +164,12 @@ async function generateSunStalkerWoT(objName,description,dataAccessSet) {
   let sensorWoT = wot.generateWoTObject(
     id,
     objName,
-    'Sensor giving sun position according to 3 photo receptors', 
+    'Sensor giving sun position according to 3 photo receptors',
     undefined,
     undefined,
-    props, 
+    props,
     undefined,
-    undefined, 
+    undefined,
     undefined,
     [
       wot.generators.createSecurityInfos(
@@ -186,7 +186,7 @@ async function generateSensorWoT() {
     'Sensor',
     'Sensor detecting sun position using 3 well positioned photoCells',
     {
-      'photoCellValues':wot.const.dataType.array
+      'photoCellValues': wot.const.dataType.array
     })
   return sensorWoT
 }
@@ -197,8 +197,8 @@ async function generateHeliotWoT() {
     'Heliot',
     'Solar panel orienting itslef to always face the sun',
     {
-      'position':wot.const.dataType.number,
-      'power':wot.const.dataType.number
+      'position': wot.const.dataType.number,
+      'power': wot.const.dataType.number
     })
   return heliotWoT
 }
@@ -210,7 +210,7 @@ async function generateHeliotWoT() {
 async function getOnlinePhotoValues() {
 
   let options = {
-    uri: SunStalkerServerUrl+'/getFullOrient',
+    uri: SunStalkerServerUrl + '/getFullOrient',
     method: 'GET',
     json: true,
   }
@@ -222,20 +222,20 @@ async function getOnlinePhotoValues() {
 
 function getLocalPhotoValue() {
 
-	return sensorData
+  return sensorData
 
 }
 
 function getHeliotPosition() {
 
-	if(heliotData == null)
+  if (heliotData == null)
     return null
   return heliotData[0]
 }
 
 function getHeliotPower() {
 
-  if(heliotData == null)
+  if (heliotData == null)
     return null
   return heliotData[1]
 }
@@ -249,26 +249,26 @@ function getHeliotPower() {
 
 async function computePhotoValue() {
 
-	let localPhoto = await getLocalPhotoValue()
+  let localPhoto = await getLocalPhotoValue()
   try {
-	 let onlinePhoto = await getOnlinePhotoValues()
-  } catch(error) {
+    let onlinePhoto = await getOnlinePhotoValues()
+  } catch (error) {
     onlinePhoto = []
   }
 
-	let computedValues = localPhoto
+  let computedValues = localPhoto
 
-	for(let data of onlinePhoto){
-		computedValues[0] += data[0]
-		computedValues[1] += data[1]
-		computedValues[2] += data[2]
-	}
+  for (let data of onlinePhoto) {
+    computedValues[0] += data[0]
+    computedValues[1] += data[1]
+    computedValues[2] += data[2]
+  }
 
-	computedValues[0] /= onlinePhoto.length+1
-	computedValues[1] /= onlinePhoto.length+1
-	computedValues[2] /= onlinePhoto.length+1
+  computedValues[0] /= onlinePhoto.length + 1
+  computedValues[1] /= onlinePhoto.length + 1
+  computedValues[2] /= onlinePhoto.length + 1
 
-	return computedValues
+  return computedValues
 }
 // -----------------------------------
 
@@ -279,7 +279,7 @@ async function getOnlineData() {
 
   let returns = []
 
-  for(let api of apis) {
+  for (let api of apis) {
 
     let options = {
       uri: api,
@@ -301,34 +301,34 @@ async function getOnlineData() {
 
 async function computeSunPosition() {
 
-	let photoValues = await computePhotoValue()
+  let photoValues = await computePhotoValue()
   let onlineData = await getOnlineData()
 
-  let minValue = Math.min(photoValues[0],photoValues[1],photoValues[2])
+  let minValue = Math.min(photoValues[0], photoValues[1], photoValues[2])
 
   let west = photoValues[0] - minValue
   let zenith = photoValues[1] - minValue
   let east = photoValues[2] - minValue
 
-  if(west == east)
+  if (west == east)
     return 90
 
   let mid = Math.abs(west - east) / 2
 
-  if(east == 0) {
-    let maxValue = Math.max(west,zenith)
+  if (east == 0) {
+    let maxValue = Math.max(west, zenith)
     let ratio = 45 / maxValue
     west = west * ratio
     zenith = zenith * ratio
-    return  45 + zenith - west
+    return 45 + zenith - west
   }
 
-  if(west == 0) {
-    let maxValue = Math.max(east,zenith)
+  if (west == 0) {
+    let maxValue = Math.max(east, zenith)
     let ratio = 45 / maxValue
     east = east * ratio
     zenith = zenith * ratio
-    return  (90+45) - zenith + east
+    return (90 + 45) - zenith + east
   }
 
   return 0
@@ -343,36 +343,36 @@ async function computeSunPosition() {
 /**
  * return 3 elements array containing the average values of photo cells from all arduinos connected to central server
  */
-exports.getPhotoValues = async function() {
-	return await computePhotoValue()
+exports.getPhotoValues = async function () {
+  return await computePhotoValue()
 }
 
 
 /**
  * return 3 elements array containing the values of photo cells from the locally connected arduino
  */
-exports.getLocalPhotoValue = async function() {
-	return getLocalPhotoValue()
+exports.getLocalPhotoValue = async function () {
+  return getLocalPhotoValue()
 }
 
 /**
  * return a number between 0 and 1, corresponding to an angle of 0 to 180 degrees
  */
-exports.getSunPosition = async function() {
-	return await computeSunPosition()
+exports.getSunPosition = async function () {
+  return await computeSunPosition()
 }
 
 /**
  * return 
  */
-exports.getHeliotPosition = async function() {
-	return getHeliotPosition()
+exports.getHeliotPosition = async function () {
+  return getHeliotPosition()
 }
 
 /**
  * return 
  */
-exports.getHeliotPower = async function() {
+exports.getHeliotPower = async function () {
   return getHeliotPower()
 }
 
@@ -380,14 +380,14 @@ exports.getHeliotPower = async function() {
 /**
  * return 
  */
-exports.setHeliotPosition = function(position) {
-	serial.sendHeliot([1,position]);
+exports.setHeliotPosition = function (position) {
+  serial.sendHeliot([1, position]);
 }
 
 // -------------------------------------------
 /**
  * return the serial interface object handler
  */
-exports.getSerialInterface = function() {
-	return serial
+exports.getSerialInterface = function () {
+  return serial
 }

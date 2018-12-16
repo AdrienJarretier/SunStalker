@@ -10,7 +10,7 @@ let myToken = null
 
 async function getToken() {
 
-  if(myToken != null) {
+  if (myToken != null) {
     return myToken
   }
 
@@ -22,7 +22,7 @@ async function getToken() {
   try {
     myToken = await request(options)
   }
-  catch(error) {
+  catch (error) {
     return null
   }
 
@@ -34,43 +34,43 @@ async function sendData(objectType, objectData) {
   let token = await getToken()
 
   let options = {
-    uri: SunStalkerServerUrl+'/setMyData',
+    uri: SunStalkerServerUrl + '/setMyData',
     method: 'POST',
     json: true,
-    body: {'token':token,'objectType':objectType,'objectData':objectData}
+    body: { 'token': token, 'objectType': objectType, 'objectData': objectData }
   }
 
   try {
     return await request(options)
   }
-  catch(error) {
+  catch (error) {
     return null
   }
 }
 // -----------------------------
-async function sendObject(type,object) {
+async function sendObject(type, object) {
 
   let token = await getToken()
 
   let options = {
-    uri: SunStalkerServerUrl+'/setMyObject',
+    uri: SunStalkerServerUrl + '/setMyObject',
     method: 'POST',
     json: true,
-    body: {'token': token, 'objectType': type, 'object':object}
+    body: { 'token': token, 'objectType': type, 'object': object }
   }
 
   try {
     return await request(options)
   }
-  catch(error) {
+  catch (error) {
     return null
   }
 }
 // -----------------------------
-async function getObjectData(objid,property) {
+async function getObjectData(objid, property) {
 
   let options = {
-    uri: SunStalkerServerUrl+'/objects/' + objid + '/' +property,
+    uri: SunStalkerServerUrl + '/objects/' + objid + '/' + property,
     method: 'GET',
     json: true,
   }
@@ -78,7 +78,7 @@ async function getObjectData(objid,property) {
   try {
     return await request(options)
   }
-  catch(error) {
+  catch (error) {
     return null
   }
 }
@@ -86,7 +86,7 @@ async function getObjectData(objid,property) {
 async function retrieveAllObject(token) {
 
   let options = {
-    uri: SunStalkerServerUrl+'/getObjects/' + token,
+    uri: SunStalkerServerUrl + '/getObjects/' + token,
     method: 'GET',
     json: true,
   }
@@ -94,7 +94,7 @@ async function retrieveAllObject(token) {
   try {
     return await request(options)
   }
-  catch(error) {
+  catch (error) {
     return null
   }
 }
@@ -102,7 +102,7 @@ async function retrieveAllObject(token) {
 async function getOnlinePhotoValues() {
 
   let options = {
-    uri: SunStalkerServerUrl+'/getFullOrient',
+    uri: SunStalkerServerUrl + '/getFullOrient',
     method: 'GET',
     json: true,
   }
@@ -118,40 +118,40 @@ async function main() {
   let resp = null
 
   // ----- add objects
-  resp = await sendObject('Heliot',{'id':'heliotid','desc':'je suis un heliot'})
+  resp = await sendObject('Heliot', { 'id': 'heliotid', 'desc': 'je suis un heliot' })
   console.log(resp)
   resp = await retrieveAllObject(await getToken())
   console.log(resp)
-  resp = await sendObject('Sensor',{'id':'sensorid','desc':'je suis un sensor'})
+  resp = await sendObject('Sensor', { 'id': 'sensorid', 'desc': 'je suis un sensor' })
   console.log(resp)
   resp = await retrieveAllObject(await getToken())
   console.log(resp)
 
 
   // ----- set object data
-  resp = await sendData('Heliot',{'myData':[0,1,2,3]})
+  resp = await sendData('Heliot', { 'myData': [0, 1, 2, 3] })
   console.log(resp)
-  resp = await getObjectData('heliotid','myData')
+  resp = await getObjectData('heliotid', 'myData')
   console.log(resp)
-  resp = await getObjectData('sensorid','myData')
+  resp = await getObjectData('sensorid', 'myData')
   console.log(resp)
 
   // ----- remove objects
-  resp = await sendObject('Heliot',null)
+  resp = await sendObject('Heliot', null)
   console.log(resp)
-  resp = await sendData('Heliot',{'myData':[0,1,2,3]})
+  resp = await sendData('Heliot', { 'myData': [0, 1, 2, 3] })
   console.log(resp)
-  resp = await getObjectData('heliotid','myData')
+  resp = await getObjectData('heliotid', 'myData')
   console.log(resp)
 
   // ----- retrive orientations
-  resp = await sendData('Sensor',{'photoCellValues':[0,1,2]})
+  resp = await sendData('Sensor', { 'photoCellValues': [0, 1, 2] })
   console.log(resp)
   resp = await getOnlinePhotoValues()
   console.log(resp)
 }
 
 console.log('trying ...')
-main().then(function(){
+main().then(function () {
   console.log('done')
 })

@@ -69,5 +69,5 @@ $(() => {
 
     updateSun();
     updateTime();
-    
+
 })

@@ -1,26 +1,28 @@
-exports.generateWoTObject = function(
-  id, name, description, 
-  support, base, properties, 
-  actions, events, 
+'use strict';
+
+exports.generateWoTObject = function (
+  id, name, description,
+  support, base, properties,
+  actions, events,
   links, securities) {
 
-  let obj = {id:id,name:name}
+  let obj = { id: id, name: name }
 
-  if(description != undefined)
+  if (description != undefined)
     obj.description = description
-  if(support != undefined)
+  if (support != undefined)
     obj.support = support
-  if(base != undefined)
+  if (base != undefined)
     obj.base = base
-  if(properties != undefined)
+  if (properties != undefined)
     obj.properties = properties
-  if(actions != undefined)
+  if (actions != undefined)
     obj.actions = actions
-  if(events != undefined)
+  if (events != undefined)
     obj.events = events
-  if(links != undefined)
+  if (links != undefined)
     obj.links = links
-  if(securities != undefined)
+  if (securities != undefined)
     obj.securities = securities
 
   return obj
@@ -69,56 +71,56 @@ exports.const.rel.unsubscribeevent = 'unsubscribeevent'
 
 exports.generators = {}
 
-exports.generators.createSecurityInfos = function(scheme, description, proxyUrl) {
-  let obj = {scheme:scheme}
+exports.generators.createSecurityInfos = function (scheme, description, proxyUrl) {
+  let obj = { scheme: scheme }
 
-  if(description != undefined)
+  if (description != undefined)
     obj.description = description
-  if(description != undefined)
+  if (description != undefined)
     obj.proxyUrl = proxyUrl
 
   return obj
 }
 
-exports.generators.createDataShema = function(description, type, constant, enume){
-  return {description:description, type:type, const:constant, enum:enume}
+exports.generators.createDataShema = function (description, type, constant, enume) {
+  return { description: description, type: type, const: constant, enum: enume }
 }
 
-exports.generators.createOneAction = function(input, output) {
+exports.generators.createOneAction = function (input, output) {
   let obj = {}
-  if(input != undefined)
+  if (input != undefined)
     obj.input = input
-  if(output != undefined)
+  if (output != undefined)
     obj.output = output
   return obj
 }
 
-exports.generators.createProperties = function(observable,writable,type,forms) {
-  let obj = {observable:observable, writable:writable}
+exports.generators.createProperties = function (observable, writable, type, forms) {
+  let obj = { observable: observable, writable: writable }
 
-  if(type != undefined)
+  if (type != undefined)
     obj.type = type
-  if(forms != undefined)
+  if (forms != undefined)
     obj.forms = forms
   return obj
 
 }
 
-exports.generators.createForm = function(
+exports.generators.createForm = function (
   href, httpmethod, mediaType, rel, subProtocol, securities, scopes) {
 
-  let obj = {href:href}
-  if(mediaType != undefined)
+  let obj = { href: href }
+  if (mediaType != undefined)
     obj.mediaType = mediaType
-  if(httpmethod != undefined)
+  if (httpmethod != undefined)
     obj.httpmethod = httpmethod
-  if(rel != undefined)
+  if (rel != undefined)
     obj.rel = rel
-  if(subProtocol != undefined)
+  if (subProtocol != undefined)
     obj.subProtocol = subProtocol
-  if(securities != undefined)
+  if (securities != undefined)
     obj.securities = securities
-  if(scopes != undefined)
+  if (scopes != undefined)
     obj.scopes = scopes
 
   return obj

@@ -61,26 +61,26 @@ function drawSun(angle) {
 		.attr("width", width)
 		.attr("height", 100)
 		.attr("fill", "white")
-	
+
 	// request.getHour()
 	// sunrise = request.getSunRise()
 	// sunset = request.getSunSet()
-	
+
 	// console.log('hours :', sunrise, sunset);
-	
+
 	// svg.append("text")
 	// 	.attr("x", 0)
 	// 	.attr("y", bottom + 20)
 	// 	.text(sunrise)
-		
+
 	// svg.append("text")
 	// 	.attr("x", width-100)
 	// 	.attr("y", bottom + 20)
 	// 	.text(sunset)
-		
+
 }
 
-function updateSun(angle){
+function updateSun(angle) {
 
 
 	image.attr('xlink:href', 'https://st2.depositphotos.com/6025596/11754/v/950/depositphotos_117540510-stock-illustration-sun-icon-light-sign-isolated.jpg')
