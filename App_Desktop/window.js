@@ -8,7 +8,7 @@ const power = require('./lineChart.js');
 const rp = require('request-promise-native')
 
 const POWER_UPDATE_TIME_RANGE_S = 30;
-const POWER_UPDATE_TIME_STEP_MS = 300;
+const POWER_UPDATE_TIME_STEP_MS = 120;
 
 let angle = 0;
 let powerData = [];
@@ -75,7 +75,7 @@ function updateTime() {
     setTimeout(updateTime, 1000);
 }
 
-function updatePower() {
+function queryPower() {
 
     rp({
 
@@ -92,15 +92,21 @@ function updatePower() {
         });
 
 
-        power.updatePower(powerData);
-
-        setTimeout(updatePower, POWER_UPDATE_TIME_STEP_MS);
+        setTimeout(queryPower, POWER_UPDATE_TIME_STEP_MS);
 
     }, (err) => {
 
         console.log('error when getting HeliotPower')
 
     })
+
+}
+
+function updatePower() {
+
+    power.updatePower(powerData);
+
+    requestAnimationFrame(updatePower);
 
 }
 
@@ -129,6 +135,7 @@ function start() {
 
 
             power.drawPower(powerData);
+            queryPower();
             updatePower();
 
         }

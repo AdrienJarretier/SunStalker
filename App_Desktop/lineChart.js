@@ -22,7 +22,7 @@ function drawPower(data) {
 
     let svg = d3.select('#powerChart').append('svg')
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height + 20);
 
 
 
@@ -35,14 +35,14 @@ function drawPower(data) {
 
     g = svg.append("g")
         .attr("transform",
-            "translate(" + margin.left + "," + -3 + ")"
+            "translate(" + 0 + "," + 10 + ")"
         );
 
-    g.append("text")
-        .text("Heliot's power in time")
-        .attr("x", width / 2 - 100)
-        .style("fill", 'black')
-        .attr("y", 0);
+    // g.append("text")
+    //     .text("Heliot's power in time")
+    //     .attr("x", width / 2 - 100)
+    //     .style("fill", 'black')
+    //     .attr("y", 10);
 
 
     line = d3.line()
