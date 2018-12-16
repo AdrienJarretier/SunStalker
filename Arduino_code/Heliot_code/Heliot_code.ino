@@ -1,3 +1,5 @@
+#include "CompassCMA.hpp"
+
 #include <Servo.h>
 
 int servo_pin = 10;
@@ -70,10 +72,15 @@ void moveToPosition(int panPosition)
   servo.write(panPosition);
 }
 
+CompassCMA *compass;
+
 // ------------------------------------------------ INIT CODE
 void setup(void)
 {
   initSerialCommunication();
+
+  compass = new CompassCMA();
+
   moveToPosition(0);
   servo.attach(servo_pin);
 }
@@ -85,7 +92,18 @@ void loop(void)
   int *data = receiveData();
   if (data[0] == 1)
   {
-    int panPosition = data[1];
+    int panPosition;
+
+    float heading = compass->read();
+    if (CompassCMA::NORTH_VALUE - 90 < heading && heading < CompassCMA::NORTH_VALUE + 90)
+    {
+      panPosition = data[1];
+    }
+    else
+    {
+      panPosition = 180 - data[1];
+    }
+
     moveToPosition(panPosition);
   }
 

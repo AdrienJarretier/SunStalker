@@ -134,6 +134,7 @@ function start() {
 
         if (devices.includes('HELIOT')) {
 
+            $('#powerChart').append($('<h3>').text("Heliot's power in time"));
 
             power.drawPower(powerData);
             queryPower();
