@@ -62,21 +62,44 @@ function drawSun(angle) {
 		.attr("height", 100)
 		.attr("fill", "white")
 
+
+
+
+	rp({
+
+		method: 'GET',
+		uri: 'http://127.0.0.1:6138/getSunRiseSunSet',
+		json: true
+
+	}).then((data) => {
+
+
+		let sunrise = data.sunrise;
+		let sunset = data.sunset;
+
+		svg.append("text")
+			.attr("x", width - 100)
+			.attr("y", bottom + 20)
+			.text(sunrise)
+
+		svg.append("text")
+			.attr("x", 0)
+			.attr("y", bottom + 20)
+			.text(sunset)
+
+
+	}, (err) => {
+
+		console.log('error when getting SunRiseSunSet')
+
+	})
+
 	// request.getHour()
 	// sunrise = request.getSunRise()
 	// sunset = request.getSunSet()
 
 	// console.log('hours :', sunrise, sunset);
 
-	// svg.append("text")
-	// 	.attr("x", 0)
-	// 	.attr("y", bottom + 20)
-	// 	.text(sunrise)
-
-	// svg.append("text")
-	// 	.attr("x", width-100)
-	// 	.attr("y", bottom + 20)
-	// 	.text(sunset)
 
 }
 

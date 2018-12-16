@@ -292,8 +292,6 @@ async function getOnlineData() {
     returns.push(data)
   }
 
-  console.log(returns)
-
   return returns
 }
 
@@ -339,6 +337,13 @@ async function computeSunPosition() {
 // ------------------------------------------------ INTERFACE ---
 
 // -------------------------------------------
+
+exports.getSunRiseSunSet = async function () {
+
+  let onlineDatas = await getOnlineData();
+
+  return onlineDatas[0].results;
+}
 
 /**
  * return 3 elements array containing the average values of photo cells from all arduinos connected to central server

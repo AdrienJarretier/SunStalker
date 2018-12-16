@@ -43,6 +43,19 @@ app.get('/getSunPosition', function (req, res) {
 
 })
 
+
+app.get('/getSunRiseSunSet', function (req, res) {
+
+  let pr = dataModel.getSunRiseSunSet();
+
+  pr.then((v) => {
+
+    res.json(v);
+
+  })
+
+})
+
 let getsList = '<ul>';
 
 for (let layer of app._router.stack) {

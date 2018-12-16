@@ -42,7 +42,7 @@ function drawChart(data) {
         .attr('width', function (d) { return width / 3.5; })
         .style("fill", "orange");
 
-    let names = ["EAST", "AZIMUT", "WEST"]
+    let names = ["WEST", "ZENITH", "EAST"]
     g.selectAll('text').data(data).enter().append('text')
         .attr("x", function (d, i) { return i * width / 3 + width / 12 })
         .attr("y", height - 100)
