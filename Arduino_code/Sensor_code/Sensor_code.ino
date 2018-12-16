@@ -1,3 +1,4 @@
+#include "CompassCMA.hpp"
 
 int photocellPin1 = 0;
 int photocellReading1;
@@ -5,7 +6,7 @@ int photocellReading1;
 int photocellPin2 = 2;
 int photocellReading2;
 
-int photocellPin3 = 5;
+int photocellPin3 = 1;
 int photocellReading3;
 
 // -----------------------------------------------
@@ -63,19 +64,39 @@ int *recieveData()
 }
 // -----------------------------------------------
 
+CompassCMA *compass;
+
 // ------------------------------------------------ INIT CODE
 void setup(void)
 {
   initSerialCommunication();
+
+  compass = new CompassCMA();
 }
 
 // ------------------------------------------------ RUNNING CODE
 void loop(void)
 {
 
-  photocellReading1 = analogRead(photocellPin1);
+  float heading = compass->read();
+
+  int photocellWest;
+  int photocellEast;
+
+  if (CompassCMA::NORTH_VALUE - 90 < heading && heading < CompassCMA::NORTH_VALUE + 90)
+  {
+    photocellWest = photocellPin1;
+    photocellEast = photocellPin3;
+  }
+  else
+  {
+    photocellWest = photocellPin3;
+    photocellEast = photocellPin1;
+  }
+
+  photocellReading1 = analogRead(photocellWest);
   photocellReading2 = analogRead(photocellPin2);
-  photocellReading3 = analogRead(photocellPin3);
+  photocellReading3 = analogRead(photocellEast);
 
   int outData[3] = {photocellReading1, photocellReading2, photocellReading3};
   sendData(outData, 3);
