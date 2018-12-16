@@ -36,12 +36,26 @@ app.get('/getSunPosition', function (req, res) {
 
   pr.then((v) => {
 
+    if (v)
+      res.json(Math.max(...v) == v[0] ? 0 : Math.max(...v) == v[1] ? 0.5 : 1)
 
-    res.json(Math.max(...v) == v[0] ? 0 : Math.max(...v) == v[1] ? 0.5 : 1)
 
   })
 
 })
+
+
+app.get('/getConnectedDevices', function (req, res) {
+
+  let returnObject = {
+
+    connectedDevices: dataModel.getConnectedDevices()
+
+  };
+
+  res.json(returnObject);
+
+});
 
 
 app.get('/getSunRiseSunSet', function (req, res) {
@@ -54,7 +68,20 @@ app.get('/getSunRiseSunSet', function (req, res) {
 
   })
 
-})
+});
+
+
+app.get('/getHeliotPower', function (req, res) {
+
+  let pr = dataModel.getHeliotPower();
+
+  pr.then((v) => {
+
+    res.json(v);
+
+  })
+
+});
 
 let getsList = '<ul>';
 

@@ -33,7 +33,7 @@ let dataTransformers = {
 	Heliot: function (data) {
 		if (data.length != 4)
 			return null
-		return [parseInt(data[1]), parseInt(data[2]), parseInt(data[3])]
+		return [parseInt(data[1]), parseFloat(data[2]), parseInt(data[3])]
 	},
 }
 
@@ -211,7 +211,8 @@ function startUsbMonitoring() {
 
 	// -----------------------------------------------
 	// -----------------------------------------------
-	usbDetect.find(function (err, devices) {
+	usbDetect.find(10755, 67, function (err, devices) {
+
 		for (let device of devices) {
 			usbIn(device)
 		}
@@ -230,6 +231,9 @@ exports.start = function () {
 }
 
 exports.stop = function () {
+
+	console.log("stopping usbDetect monitoring");
+
 	usbDetect.stopMonitoring();
 	isStarted = false
 }

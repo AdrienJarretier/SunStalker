@@ -1,86 +1,100 @@
-    #include <Servo.h>
-    
-    int servo_pin = 10;
-    int presence_pin = 11;
-    int battery_data_pin = 12;
-    
-    Servo servo;
+#include <Servo.h>
 
-    // -----------------------------------------------
-    String deviceType = "Heliot"; // Device type (Sensor, Heliot)
+int servo_pin = 10;
+int presence_pin = 11;
+int SOLAR_CELL_ANALOG_PIN = 0;
 
-    // ------------------------------------------------ COMMON METHODS
-    void initSerialCommunication() {
-      Serial.begin(9600);
-    }
-    // -----------------------------------------------
-    void sendData(int data[], int dataCount) {
-      Serial.print(deviceType);
-      for(int i=0;i<dataCount;++i) {
-        Serial.print(",");
-        Serial.print(data[i]);
+Servo servo;
+
+// -----------------------------------------------
+String deviceType = "Heliot"; // Device type (Sensor, Heliot)
+
+// ------------------------------------------------ COMMON METHODS
+void initSerialCommunication()
+{
+  Serial.begin(9600);
+}
+// -----------------------------------------------
+void sendData(float data[], int dataCount)
+{
+  Serial.print(deviceType);
+  for (int i = 0; i < dataCount; ++i)
+  {
+    Serial.print(",");
+    Serial.print(data[i]);
+  }
+  Serial.println();
+}
+// -----------------------------------------------
+int *receiveData()
+{
+
+  static int data[255];
+  for (int i = 0; i < 255; ++i)
+  {
+    data[i] = 0;
+  }
+
+  if (Serial.available() > 0)
+  {
+
+    int i = 0;
+    String valueBuffer = "";
+
+    while (Serial.available())
+    {
+      char c = Serial.read();
+      if (c == ',' || c == '\n')
+      {
+        data[i] = valueBuffer.toInt();
+        i++;
+        valueBuffer = "";
       }
-      Serial.println();
-    }
-    // -----------------------------------------------
-    int* recieveData() {
-      
-      static int data[255];
-      for(int i=0;i<255;++i) {
-        data[i] = 0;
+      else
+      {
+        valueBuffer += c;
       }
-
-      if(Serial.available() > 0) {
-
-        int i = 0;
-        String valueBuffer = "";
-        
-        while(Serial.available()) {
-          char c = Serial.read();
-          if(c == ',' || c == '\n') {
-            data[i] = valueBuffer.toInt();
-            i++;
-            valueBuffer = "";
-          } else {
-            valueBuffer += c;
-          }
-        }
-        
-      }
-      
-      return data;
     }
-    // -----------------------------------------------
+  }
 
-    void moveToPosition(int panPosition) {
-      if(panPosition > 180) {
-        panPosition = 180;
-      }
-      servo.write(panPosition);
-    }
-    
-    // ------------------------------------------------ INIT CODE
-    void setup(void) {
-      initSerialCommunication();
-      moveToPosition(0);
-      servo.attach(servo_pin);
-    }
-    
-    // ------------------------------------------------ RUNNING CODE
-    void loop(void) {
+  return data;
+}
+// -----------------------------------------------
 
-      int* data = recieveData();
-      if( data[0] == 1 ) {
-        int panPosition = data[1];
-        moveToPosition(panPosition);
-      }
+void moveToPosition(int panPosition)
+{
+  if (panPosition > 180)
+  {
+    panPosition = 180;
+  }
+  servo.write(panPosition);
+}
 
-      int servoPosition = servo.read();
-      int presenceData = 0;
-      int batteryData = 0;
-      int outData[3] = {servoPosition,presenceData,batteryData};
+// ------------------------------------------------ INIT CODE
+void setup(void)
+{
+  initSerialCommunication();
+  moveToPosition(0);
+  servo.attach(servo_pin);
+}
 
-      sendData(outData,3);
-     
-      delay(100);
-    }
+// ------------------------------------------------ RUNNING CODE
+void loop(void)
+{
+
+  int *data = receiveData();
+  if (data[0] == 1)
+  {
+    int panPosition = data[1];
+    moveToPosition(panPosition);
+  }
+
+  float servoPosition = servo.read();
+  float solarCellVoltage = float(analogRead(SOLAR_CELL_ANALOG_PIN)) / 204.8;
+  float presenceData = 0;
+  float outData[3] = {servoPosition, solarCellVoltage, presenceData};
+
+  sendData(outData, 3);
+
+  delay(50);
+}

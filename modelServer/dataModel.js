@@ -11,9 +11,17 @@ const wot = require('./WoT.js');
 
 serial.start()
 
-let sensorBinded = false
+process.on('SIGINT', function () {
+
+  serial.stop();
+
+  process.exit();
+
+});
+
+let sensorConnected = false
 let sensorData = null
-let heliotBinded = false
+let heliotConnected = false
 let heliotData = null
 
 let sensorObjectOnline = false
@@ -37,11 +45,13 @@ serial.bindToSensorData(async function (data) {
     getToken()
 })
 serial.bindToSensorDisconnect(async function () {
+  sensorConnected = false;
   sensorData = null
   await sendObject('Sensor', null)
   sensorObjectOnline = false
 })
 serial.bindToSensorConnect(async function () {
+  sensorConnected = true;
   let obj = await generateSensorWoT()
   await sendObject('Sensor', obj)
   sensorObjectOnline = true
@@ -56,11 +66,13 @@ serial.bindToHeliotData(async function (data) {
     getToken()
 })
 serial.bindToHeliotDisconnect(async function () {
+  heliotConnected = false;
   heliotData = null
   await sendObject('Heliot', null)
   heliotObjectOnline = false
 })
 serial.bindToHeliotConnect(async function () {
+  heliotConnected = true;
   let obj = await generateHeliotWoT()
   await sendObject('Heliot', obj)
   heliotObjectOnline = true
@@ -343,6 +355,26 @@ exports.getSunRiseSunSet = async function () {
   let onlineDatas = await getOnlineData();
 
   return onlineDatas[0].results;
+}
+
+exports.getConnectedDevices = function () {
+
+  let connectedDevices = []
+
+  if (heliotConnected) {
+
+    connectedDevices.push('HELIOT');
+
+  }
+
+  if (sensorConnected) {
+
+    connectedDevices.push('SENSOR');
+
+  }
+
+  return connectedDevices;
+
 }
 
 /**
