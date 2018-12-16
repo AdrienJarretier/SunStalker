@@ -15,17 +15,6 @@ let app = express();
 let apiIRIS = ['getLocalPhotoValue', 'getSunPosition']
 
 
-app.get('/', function (req, res) {
-
-  res.send(
-    '<ul>'
-    + '<li><a href="getLocalPhotoValue">getLocalPhotoValue</a></li>'
-    + '<li><a href="getSunPosition">getSunPosition</a></li>'
-    + '</ul>'
-  )
-
-})
-
 
 
 app.get('/getLocalPhotoValue', function (req, res) {
@@ -53,6 +42,36 @@ app.get('/getSunPosition', function (req, res) {
   })
 
 })
+
+let getsList = '<ul>';
+
+for (let layer of app._router.stack) {
+
+  if (layer.route) {
+
+    // paths.push(layer.route.path)
+
+    getsList += '<li><a href="' + layer.route.path + '">' + layer.route.path + '</a></li>';
+
+    // res.send(
+    //   '<ul>'
+    //   + '<li><a href="getLocalPhotoValue">getLocalPhotoValue</a></li>'
+    //   + '<li><a href="getSunPosition">getSunPosition</a></li>'
+    //   + '</ul>'
+    // )
+
+
+  }
+
+}
+
+getsList += '</ul>';
+
+app.get('/', function (req, res) {
+  res.send(getsList);
+})
+
+
 
 let server = require('http').Server(app);
 
