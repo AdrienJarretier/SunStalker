@@ -2,7 +2,7 @@
 
 int servo_pin = 10;
 int presence_pin = 11;
-int battery_data_pin = 12;
+int SOLAR_CELL_ANALOG_PIN = 0;
 
 Servo servo;
 
@@ -15,7 +15,7 @@ void initSerialCommunication()
   Serial.begin(9600);
 }
 // -----------------------------------------------
-void sendData(int data[], int dataCount)
+void sendData(float data[], int dataCount)
 {
   Serial.print(deviceType);
   for (int i = 0; i < dataCount; ++i)
@@ -26,7 +26,7 @@ void sendData(int data[], int dataCount)
   Serial.println();
 }
 // -----------------------------------------------
-int *recieveData()
+int *receiveData()
 {
 
   static int data[255];
@@ -82,19 +82,19 @@ void setup(void)
 void loop(void)
 {
 
-  int *data = recieveData();
+  int *data = receiveData();
   if (data[0] == 1)
   {
     int panPosition = data[1];
     moveToPosition(panPosition);
   }
 
-  int servoPosition = servo.read();
-  int presenceData = 0;
-  int batteryData = 0;
-  int outData[3] = {servoPosition, presenceData, batteryData};
+  float servoPosition = servo.read();
+  float solarCellVoltage = float(analogRead(SOLAR_CELL_ANALOG_PIN)) / 204.8;
+  float presenceData = 0;
+  float outData[3] = {servoPosition, solarCellVoltage, presenceData};
 
   sendData(outData, 3);
 
-  delay(100);
+  delay(50);
 }

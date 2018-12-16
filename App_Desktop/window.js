@@ -7,9 +7,23 @@ const power = require('./lineChart.js');
 
 const rp = require('request-promise-native')
 
-let i = 0;
+const POWER_UPDATE_TIME_RANGE_S = 30;
+const POWER_UPDATE_TIME_STEP_MS = 300;
+
 let angle = 0;
-let powerDatas = [];
+let powerData = [];
+
+let updatePowerStep = 0;
+while (updatePowerStep < POWER_UPDATE_TIME_RANGE_S * 1000 / POWER_UPDATE_TIME_STEP_MS) {
+
+    powerData.push(
+        {
+            value: 0
+        });
+
+    ++updatePowerStep;
+
+}
 
 function updatePhotoValuesChart() {
 
@@ -20,6 +34,7 @@ function updatePhotoValuesChart() {
         json: true
 
     }).then((data) => {
+
 
         chart.update(data);
 
@@ -60,14 +75,77 @@ function updateTime() {
     setTimeout(updateTime, 1000);
 }
 
+function updatePower() {
+
+    rp({
+
+        method: 'GET',
+        uri: 'http://127.0.0.1:6138/getHeliotPower',
+        json: true
+
+    }).then((data) => {
+
+        powerData.shift();
+
+        powerData.push({
+            value: data
+        });
+
+
+        power.updatePower(powerData);
+
+        setTimeout(updatePower, POWER_UPDATE_TIME_STEP_MS);
+
+    }, (err) => {
+
+        console.log('error when getting HeliotPower')
+
+    })
+
+}
+
+function start() {
+
+    rp({
+
+        method: 'GET',
+        uri: 'http://127.0.0.1:6138/getConnectedDevice',
+        json: true
+
+    }).then((data) => {
+
+        let device = data.connectedDevice;
+
+        if (device == 'SENSOR') {
+
+            sun.drawSun(angle)
+            chart.drawChart([50, 300, 200]);
+            updatePhotoValuesChart();
+
+            updateSun();
+
+        }
+        else if (device == 'HELIOT') {
+
+
+            power.drawPower(powerData);
+            updatePower();
+
+        }
+
+    }, (err) => {
+
+        console.log('error when getting ConnectedDevice')
+
+    })
+
+}
 
 $(() => {
-    sun.drawSun(angle)
-    chart.drawChart([50, 300, 200]);
-    power.drawPower(powerDatas);
-    updatePhotoValuesChart();
 
-    updateSun();
+    start();
+
     updateTime();
+
 
 })

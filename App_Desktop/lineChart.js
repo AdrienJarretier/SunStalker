@@ -24,21 +24,18 @@ function drawPower(data) {
         .attr("width", width)
         .attr("height", height);
 
-    console.log(data)
 
 
     x_scale = d3.scaleLinear().range([0, width]);
-    y_scale = d3.scaleLinear().range([0, height]);
+    y_scale = d3.scaleLinear().range([height, 0]);
 
-    console.log(data.length)
-    console.log(data)
 
     x_scale.domain([0, data.length]);
-    y_scale.domain([0, 205]);
+    y_scale.domain([0, 1]);
 
     g = svg.append("g")
         .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")"
+            "translate(" + margin.left + "," + -3 + ")"
         );
 
     g.append("text")
@@ -47,8 +44,9 @@ function drawPower(data) {
         .style("fill", 'black')
         .attr("y", 0);
 
+
     line = d3.line()
-        .x(function (d) { return x_scale(d.date) })
+        .x(function (d, i) { return x_scale(i) })
         .y(function (d) { return y_scale(d.value) })
         .curve(d3.curveBasis);
 
@@ -64,8 +62,8 @@ function drawPower(data) {
 }
 
 function updatePower(data) {
-    console.log(data.value)
-    x_scale.domain([0, data.length]);
+
+
     g.select(".path")   // change the line
         .attr("d", line);
 }

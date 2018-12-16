@@ -33,7 +33,7 @@ let dataTransformers = {
 	Heliot: function (data) {
 		if (data.length != 4)
 			return null
-		return [parseInt(data[1]), parseInt(data[2]), parseInt(data[3])]
+		return [parseInt(data[1]), parseFloat(data[2]), parseInt(data[3])]
 	},
 }
 
