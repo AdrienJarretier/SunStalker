@@ -11,6 +11,14 @@ const wot = require('./WoT.js');
 
 serial.start()
 
+process.on('SIGINT', function () {
+
+  serial.stop();
+
+  process.exit();
+
+});
+
 let sensorConnected = false
 let sensorData = null
 let heliotConnected = false

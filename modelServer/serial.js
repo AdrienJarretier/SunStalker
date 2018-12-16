@@ -231,6 +231,9 @@ exports.start = function () {
 }
 
 exports.stop = function () {
+
+	console.log("stopping usbDetect monitoring");
+
 	usbDetect.stopMonitoring();
 	isStarted = false
 }
