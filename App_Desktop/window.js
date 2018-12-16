@@ -43,8 +43,6 @@ function updateSun() {
 
     }).then((data) => {
 
-        console.log(data)
-
         sun.updateSun(data * 180)
 
         setTimeout(updateSun, 100);
