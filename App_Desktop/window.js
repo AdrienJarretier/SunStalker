@@ -115,14 +115,14 @@ function start() {
     rp({
 
         method: 'GET',
-        uri: 'http://127.0.0.1:6138/getConnectedDevice',
+        uri: 'http://127.0.0.1:6138/getConnectedDevices',
         json: true
 
     }).then((data) => {
 
-        let device = data.connectedDevice;
+        let devices = data.connectedDevices;
 
-        if (device == 'SENSOR') {
+        if (devices.includes('SENSOR')) {
 
             sun.drawSun(angle)
             chart.drawChart([50, 300, 200]);
@@ -131,7 +131,8 @@ function start() {
             updateSun();
 
         }
-        else if (device == 'HELIOT') {
+
+        if (devices.includes('HELIOT')) {
 
 
             power.drawPower(powerData);

@@ -357,7 +357,7 @@ exports.getSunRiseSunSet = async function () {
   return onlineDatas[0].results;
 }
 
-exports.getConnectedDevice = function () {
+exports.getConnectedDevices = function () {
 
   let connectedDevices = []
 
@@ -366,7 +366,8 @@ exports.getConnectedDevice = function () {
     connectedDevices.push('HELIOT');
 
   }
-  else if (sensorConnected) {
+
+  if (sensorConnected) {
 
     connectedDevices.push('SENSOR');
 

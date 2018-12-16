@@ -45,11 +45,11 @@ app.get('/getSunPosition', function (req, res) {
 })
 
 
-app.get('/getConnectedDevice', function (req, res) {
+app.get('/getConnectedDevices', function (req, res) {
 
   let returnObject = {
 
-    connectedDevice: dataModel.getConnectedDevice()
+    connectedDevices: dataModel.getConnectedDevices()
 
   };
 
