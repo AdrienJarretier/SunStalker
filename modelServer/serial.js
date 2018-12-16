@@ -211,7 +211,8 @@ function startUsbMonitoring() {
 
 	// -----------------------------------------------
 	// -----------------------------------------------
-	usbDetect.find(function (err, devices) {
+	usbDetect.find(10755, 67, function (err, devices) {
+
 		for (let device of devices) {
 			usbIn(device)
 		}
