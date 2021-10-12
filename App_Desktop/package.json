@@ -12,6 +12,6 @@
     "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
-    "electron": "^3.0.10"
+    "electron": "^11.5.0"
   }
 }
